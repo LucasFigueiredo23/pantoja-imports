@@ -1,0 +1,21 @@
+# Cabeçalhos HTTP aplicados pelo Cloudflare
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+# Página, CSS e JS: sempre confere se há versão nova (mudanças aparecem na hora)
+/
+  Cache-Control: public, max-age=0, must-revalidate
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+/style.css
+  Cache-Control: public, max-age=0, must-revalidate
+/script.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Imagens: guarda por 1 dia no navegador
+/assets/*
+  Cache-Control: public, max-age=86400

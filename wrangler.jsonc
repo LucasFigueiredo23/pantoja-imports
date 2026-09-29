@@ -1,0 +1,10 @@
+// Configuração do Cloudflare (Workers com arquivos estáticos).
+// Não há build: o Cloudflare publica os arquivos desta pasta como estão.
+{
+  "name": "pantoja-imports",
+  "compatibility_date": "2026-09-29",
+  "assets": {
+    "directory": "./",
+    "not_found_handling": "single-page-application"
+  }
+}

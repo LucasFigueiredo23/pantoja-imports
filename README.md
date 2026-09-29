@@ -9,7 +9,10 @@ pantoja-imports/
 ├── index.html          estrutura da página (textos fixos, seções, SEO)
 ├── style.css           visual: cores, fontes, espaçamentos, animações, celular
 ├── script.js           dados da loja, produtos, depoimentos e interações
-├── LEIAME.md           este guia
+├── README.md           este guia
+├── wrangler.jsonc      configuração do Cloudflare
+├── _headers            cache e segurança (Cloudflare)
+├── .assetsignore       arquivos que não vão para o site
 └── assets/
     ├── logo.svg              logo (monograma)
     ├── favicon.svg           ícone da aba do navegador
@@ -84,9 +87,20 @@ Os botões usam ícones genéricos (balão de conversa e @). Se quiser os ícone
 
 ## Publicar de graça
 
-Qualquer uma destas funciona com os arquivos como estão: Netlify (arraste a pasta em app.netlify.com/drop), Vercel ou GitHub Pages.
+Qualquer uma destas funciona com os arquivos como estão: Cloudflare, Netlify (arraste a pasta em app.netlify.com/drop), Vercel ou GitHub Pages.
 
-Depois de publicar, troque no `index.html` o `og:image` por um endereço completo, por exemplo `https://seusite.netlify.app/assets/og-image.png`. Sem isso, a imagem pode não aparecer ao compartilhar o link no WhatsApp.
+### Cloudflare
+
+1. No painel do Cloudflare: Workers & Pages → Create → Import a repository → escolha `pantoja-imports`.
+2. Build command: deixe vazio. Deploy command: `npx wrangler deploy` (é o padrão).
+3. Salve. A cada push na `main` o site é atualizado sozinho.
+
+Arquivos usados pelo Cloudflare:
+- `wrangler.jsonc`: nome do projeto e pasta publicada (a raiz, sem build).
+- `.assetsignore`: o que não vai para o site (README, configs, `.git`).
+- `_headers`: cache (página/CSS/JS sempre atualizados, imagens guardadas por 1 dia) e cabeçalhos de segurança.
+
+Depois de publicar, troque no `index.html` o `og:url` e o `og:image` pelo endereço final do site, por exemplo `https://pantojaimports.com.br/assets/og-image.png`. Sem isso, a imagem pode não aparecer ao compartilhar o link no WhatsApp.
 
 ## Cores e fontes
 

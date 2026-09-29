@@ -1,0 +1,8 @@
+# Arquivos que o Cloudflare NÃO deve publicar no site
+.git
+.gitignore
+.assetsignore
+.wrangler
+wrangler.jsonc
+README.md
+assets/produtos/LEIA.txt
