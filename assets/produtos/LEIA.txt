@@ -1,3 +1,4 @@
-Coloque aqui as fotos reais dos aparelhos (de preferência .webp, 1200x1500 px, fundo liso).
-Depois, no script.js, preencha o campo "imagens" do produto. Exemplo:
-imagens: ['assets/produtos/iphone-15-rosa-1.webp', 'assets/produtos/iphone-15-rosa-2.webp'],
+Coloque aqui as fotos reais dos aparelhos: WebP, 1200x1500 px (vertical 4:5), fundo liso.
+Nome simples, sem espaço nem acento. Ex.: iphone-15-rosa-1.webp
+Depois, em produtos.js, preencha o campo "fotos" do produto. Exemplo:
+fotos: ['assets/produtos/iphone-15-rosa-1.webp', 'assets/produtos/iphone-15-rosa-2.webp'],

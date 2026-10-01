@@ -7,13 +7,15 @@ Vitrine de iPhones feita em HTML, CSS e JavaScript puros. Não tem login, carrin
 ```
 pantoja-imports/
 ├── index.html          estrutura da página (textos fixos, seções, SEO)
-├── style.css           visual: cores, fontes, espaçamentos, animações, celular
-├── script.js           dados da loja, produtos, depoimentos e interações
+├── style.css           visual: cores, espaçamentos, animações, celular, tema escuro
+├── produtos.js         OS APARELHOS DA VITRINE (único arquivo que você edita para mudar produtos)
+├── script.js           dados da loja (WhatsApp, endereço...), depoimentos e interações
 ├── README.md           este guia
 ├── wrangler.jsonc      configuração do Cloudflare
 ├── _headers            cache e segurança (Cloudflare)
 ├── .assetsignore       arquivos que não vão para o site
 └── assets/
+    ├── fontes/               Archivo (títulos expandidos e textos), servida pelo próprio site
     ├── logo.svg              logo (monograma)
     ├── favicon.svg           ícone da aba do navegador
     ├── favicon-16.png        ícone da aba (navegadores antigos)
@@ -24,6 +26,7 @@ pantoja-imports/
     ├── logo-instagram.png    foto de perfil do Instagram, 1080x1080
     ├── og-image.png          imagem que aparece ao compartilhar o link
     ├── loja.webp             (você adiciona) foto da loja para a seção "Sobre"
+    ├── hero.webp             (opcional) foto do topo da página
     └── produtos/             (você adiciona) fotos reais dos aparelhos
 ```
 
@@ -42,40 +45,62 @@ O nome da loja aparece também no `<title>` e nas tags `og:` do `index.html`. Se
 
 ## Adicionar um produto
 
-Arquivo: `script.js`, lista `PRODUTOS`. Copie um bloco inteiro (de `{` até `},`), cole abaixo e edite:
+Arquivo: `produtos.js`. Copie um bloco inteiro (de `{` até `},`), cole abaixo e edite:
 
 ```js
 {
-  id: 'iphone-15-pro-256-preto',   // único, sem espaços
   modelo: 'iPhone 15 Pro',
-  categoria: 'seminovo',           // 'novo' | 'seminovo' | 'acessorio'
   armazenamento: '256 GB',
   cor: 'Titânio preto',
-  corHex: '#3b3c3e',               // cor do desenho e do fundo do card
+  condicao: 'seminovo',            // 'novo' | 'seminovo' | 'acessorio'
   bateria: 90,                     // só seminovo
-  cameras: 3,                      // 2 ou 3
-  preco: 4999,                     // ou null para "Consulte"
-  selo: '',                        // ex.: 'Oportunidade'
-  imagens: [],                     // fotos reais (ver abaixo)
+  preco: 4999,                     // ou null para mostrar "Consulte"
+  selo: '',                        // ex.: 'Oportunidade' (aparece sobre a foto)
+  destaque: true,                  // true = aparece na faixa "Em destaque"
+  fotos: [
+    'assets/produtos/iphone-15-pro-preto-1.webp',
+    'assets/produtos/iphone-15-pro-preto-2.webp',
+  ],
   detalhes: ['Saúde da bateria em 90%', 'Garantia da loja de 90 dias'],
 },
 ```
 
-Para remover, apague o bloco. Para vender, apague ou mude o preço para `null`.
+- A ordem dos blocos é a ordem no site.
+- Para remover um aparelho vendido, apague o bloco.
+- O botão "Tenho interesse" já abre o WhatsApp com modelo, armazenamento, cor e condição escritos.
+- A faixa "Em destaque" (logo abaixo do topo) mostra os produtos com `destaque: true`. Mostra 4 por linha no computador e vira faixa de arrastar no celular. Se nenhum tiver destaque, a seção some.
 
 ## Usar fotos reais
 
-1. Salve as fotos em `assets/produtos/` (ideal: `.webp`, 1200x1500 px, fundo liso).
-2. No produto, preencha `imagens: ['assets/produtos/iphone-15-pro-1.webp', 'assets/produtos/iphone-15-pro-2.webp']`.
-3. A primeira foto aparece no card; todas aparecem no modal, com miniaturas.
+Só fotos tiradas por vocês dos aparelhos da loja. Nada de foto oficial da Apple.
 
-Sem fotos, o site mostra um desenho do aparelho na cor escolhida em `corHex`. Para converter JPG em WebP de graça: squoosh.app.
+**Formato para exportar:** WebP, **1200 x 1500 px** (vertical, proporção 4:5), qualidade por volta de 80, até uns 250 KB cada. Para converter de graça: squoosh.app (escolha WebP e redimensione para 1200 de largura).
 
-Use fotos tiradas por vocês. Fotos oficiais da Apple têm direitos de imagem.
+1. Salve em `assets/produtos/` com nome simples, sem espaço nem acento: `iphone-15-pro-preto-1.webp`.
+2. Coloque os caminhos em `fotos` no produto. A primeira é a foto principal do card.
+3. Com mais de uma foto, o card vira uma galeria: arrastar no celular, pontinhos no computador e miniaturas ao abrir o produto.
+
+O site gera a descrição da foto para leitores de tela ("iPhone 15 Pro, 256 GB, Titânio preto, foto 2 de 3"). Se quiser descrever melhor uma foto específica:
+
+```js
+fotos: [{ src: 'assets/produtos/iphone-15-pro-preto-2.webp', alt: 'iPhone 15 Pro preto, lateral com pequeno risco' }],
+```
+
+Produto sem foto (`fotos: []`) mostra um fundo neutro com o logo da loja bem apagado.
+
+## Foto no topo da página (hero)
+
+Hoje o topo é só texto. Para colocar uma foto depois, sem refazer nada:
+
+1. Salve a foto em `assets/hero.webp` (mesmo formato: WebP 1200 x 1500).
+2. No `index.html`, na seção HERO, troque `<section class="hero" id="inicio">` por `<section class="hero hero--com-foto" id="inicio">`.
+3. Logo abaixo, descomente o bloco `<figure class="hero__foto">` (apague o `<!--` e o `-->` em volta) e escreva no `alt` o que aparece na foto.
+
+Com a classe `hero--com-foto`, o layout vira duas colunas no computador (texto à esquerda, foto à direita) e a foto desce para baixo do texto no celular.
 
 ## Foto da loja
 
-Salve como `assets/loja.webp`. Se o arquivo não existir, aparece o monograma no lugar.
+Salve como `assets/loja.webp` (1200 x 1500) e, no `index.html`, seção SOBRE, descomente a linha do `<img src="assets/loja.webp" ...>`. Enquanto isso, aparece o monograma.
 
 ## Mapa
 
@@ -98,10 +123,14 @@ Qualquer uma destas funciona com os arquivos como estão: Cloudflare, Netlify (a
 Arquivos usados pelo Cloudflare:
 - `wrangler.jsonc`: nome do projeto e pasta publicada (a raiz, sem build).
 - `.assetsignore`: o que não vai para o site (README, configs, `.git`).
-- `_headers`: cache (página/CSS/JS sempre atualizados, imagens guardadas por 1 dia) e cabeçalhos de segurança.
+- `_headers`: cache (página, CSS, JS e `produtos.js` sempre atualizados; imagens guardadas por 1 dia; fontes por 1 ano) e cabeçalhos de segurança.
 
-Depois de publicar, troque no `index.html` o `og:url` e o `og:image` pelo endereço final do site, por exemplo `https://pantojaimports.com.br/assets/og-image.png`. Sem isso, a imagem pode não aparecer ao compartilhar o link no WhatsApp.
+A imagem de compartilhamento (`og:image`) está comentada no `index.html`. Descomente o bloco e coloque o endereço completo da imagem (1200 x 630), por exemplo `https://pantojaimports.com.br/assets/og-image.png`. Se mudar de domínio, troque também `canonical` e `og:url`. Sem `og:image`, o WhatsApp mostra o link sem imagem.
 
-## Cores e fontes
+## Tema claro e escuro
 
-Arquivo: `style.css`, bloco `:root` no início. As cores do modo escuro estão logo abaixo. Fontes: Unbounded (títulos) e Onest (textos), do Google Fonts.
+Na primeira visita o site segue o tema do celular/computador da pessoa. Se ela tocar no botão de lua/sol, a escolha fica salva naquele aparelho.
+
+## Cores, espaços e fontes
+
+Arquivo: `style.css`, bloco `:root` no início: cores, escala de espaçamento (`--e-1` a `--e-8`), raios (`--raio-*`), sombras e velocidades de animação. As cores do modo escuro estão logo abaixo. Fonte: Archivo, em `assets/fontes/`. É uma fonte variável: os títulos usam a versão expandida (`--display-largura: 125%`) e os textos a normal. Para títulos menos largos, diminua esse valor (mínimo 100%).
