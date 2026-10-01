@@ -13,7 +13,7 @@ const CONFIG = {
   dono: 'Amir Pantoja',
 
   // Só números: DDI (55) + DDD + número. Ex.: 5591988887777
-  whatsapp: '5591999999999',
+  whatsapp: '5591982042885',
 
   instagram: 'pantojaimports', // sem o @
   tiktok: '',                  // ex.: 'pantojaimports' (vazio = não aparece)
