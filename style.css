@@ -50,9 +50,9 @@
   --metal-claro: #FBF7F3;   /* reflexo */
   --metal-medio: #BFA48F;   /* titânio */
   --metal-escuro: #7A5E47;  /* sombra do metal */
-  --halo: rgb(191 164 143 / .30); /* brilho suave de fundo */
+  --halo: rgb(255 255 255 / .55); /* brilho neutro e sutil atrás do título do hero */
   --decor-linhas: .11;      /* opacidade das linhas usinadas */
-  --grao: .05;              /* opacidade do granulado */
+  --grao: .04;              /* opacidade do granulado */
 
   --fonte-display: 'Archivo', 'Arial Black', system-ui, sans-serif;
   --fonte-texto: 'Archivo', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -100,7 +100,7 @@
     --acento: #CDB4A0; --acento-suave: #8C735F; --sobre-tinta: #131416;
     --verde-texto: #3FBF73; --sombra-cor: 0 0 0;
     --metal-claro: #E9DACB; --metal-medio: #9C8270; --metal-escuro: #3B312A;
-    --halo: rgb(140 115 95 / .22); --decor-linhas: .09; --grao: .06;
+    --halo: rgb(255 255 255 / .035); --decor-linhas: .09; --grao: .035;
     color-scheme: dark;
   }
 }
@@ -110,7 +110,7 @@
   --acento: #CDB4A0; --acento-suave: #8C735F; --sobre-tinta: #131416;
   --verde-texto: #3FBF73; --sombra-cor: 0 0 0;
   --metal-claro: #E9DACB; --metal-medio: #9C8270; --metal-escuro: #3B312A;
-  --halo: rgb(140 115 95 / .22); --decor-linhas: .09; --grao: .06;
+  --halo: rgb(255 255 255 / .035); --decor-linhas: .09; --grao: .035;
   color-scheme: dark;
 }
 
@@ -331,8 +331,8 @@ p { text-wrap: pretty; }
   padding-top: calc(var(--topo-altura) + clamp(3.5rem, 11vw, 9rem));
   padding-bottom: clamp(3rem, 7vw, 5.5rem);
 }
-/* Fundo liso com um brilho sutil atrás do título.
-   Some antes do fim da seção, sem emenda com a próxima */
+/* Fundo liso (alumínio no claro, grafite no escuro) com um brilho neutro e muito sutil
+   atrás do título. Some antes do fim da seção, sem emenda com a próxima */
 .hero::before {
   content: ''; position: absolute; inset: 0; z-index: -2; pointer-events: none;
   background: radial-gradient(46% 58% at 34% 42%, var(--halo), transparent 70%);
