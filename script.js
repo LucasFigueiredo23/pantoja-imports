@@ -75,7 +75,7 @@ const ICONES = {
   taxa: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 12.4V4.5a1 1 0 0 1 1-1h7.9l8.1 8.1a1.5 1.5 0 0 1 0 2.1l-6.8 6.8a1.5 1.5 0 0 1-2.1 0l-8.1-8.1Z"/><circle cx="8.3" cy="8.3" r="1.5"/></svg>',
   pagamento: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 15h4"/></svg>',
   // Monograma da loja, usado no fundo de produto sem foto
-  logo: '<svg viewBox="0 0 64 64" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"><line x1="22" y1="16" x2="22" y2="48"/><circle cx="33" cy="27" r="11"/><circle cx="33" cy="27" r="3.5" fill="currentColor" stroke="none"/></svg>',
+  logo: '<svg viewBox="0 0 64 64" aria-hidden="true" fill="currentColor"><path fill-rule="evenodd" d="M16 12h20a14 14 0 0 1 0 28h-8v12H16V12Zm12 8v12h8a6 6 0 0 0 0-12h-8Z"/><circle cx="41" cy="47" r="5"/></svg>',
 };
 
 /* ---------- Textos e links ---------- */

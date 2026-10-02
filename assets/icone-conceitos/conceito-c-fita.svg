@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Conceito C, "Fita": o P feito de uma fita de metal dobrada. A barriga em titânio
+       passa por cima da haste em alumínio; as pontas cortadas na diagonal lembram chapa usinada -->
+  <defs>
+    <linearGradient id="tit" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#D9C3B0"/>
+      <stop offset="1" stop-color="#A88A73"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="#1C1D1F"/>
+  <path fill="#EDEEEF" d="M16 20h11v32l-11-4.5V20Z"/>
+  <path fill="#5C4636" d="M27 31v8l-4-4Z"/>
+  <path fill="url(#tit)" fill-rule="evenodd" d="M16 12h20a13 13 0 0 1 0 26h-9v-8h9a5 5 0 0 0 0-10H16v-8Z"/>
+</svg>

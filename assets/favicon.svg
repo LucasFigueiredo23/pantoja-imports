@@ -1,7 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <!-- Monograma Pantoja Imports: o "P" com a curva formando uma lente de câmera -->
-  <rect width="64" height="64" rx="16" fill="#1C1D1F"/>
-  <line x1="22" y1="16" x2="22" y2="48" stroke="#EDEEEF" stroke-width="6" stroke-linecap="round"/>
-  <circle cx="33" cy="27" r="11" fill="none" stroke="#BFA48F" stroke-width="6"/>
-  <circle cx="33" cy="27" r="3.5" fill="#EDEEEF"/>
+  <!-- Favicon: mesmo desenho do logo.svg, com o ponto ajustado à grade de 16px (r=4, 2x2 px) -->
+  <rect width="64" height="64" rx="15" fill="#1C1D1F"/>
+  <path fill="#EDEEEF" fill-rule="evenodd" d="M16 12h20a14 14 0 0 1 0 28h-8v12H16V12Zm12 8v12h8a6 6 0 0 0 0-12h-8Z"/>
+  <circle cx="40" cy="48" r="4" fill="#BFA48F"/>
 </svg>

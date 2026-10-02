@@ -216,10 +216,10 @@ p { text-wrap: pretty; }
   text-decoration: none; white-space: nowrap; border-radius: var(--raio-p);
 }
 .marca__icone { width: 36px; height: 36px; }
+/* Ícone "P." inline: inverte sozinho no modo escuro (fundo claro, letra escura) */
 .logo-fundo { fill: var(--tinta); }
-.logo-haste { stroke: var(--bg); }
-.logo-lente { stroke: var(--acento-suave); }
-.logo-brilho { fill: var(--bg); }
+.logo-letra { fill: var(--bg); }
+.logo-ponto { fill: var(--acento-suave); }
 
 .menu { display: flex; gap: 2.25rem; }
 .menu a {
