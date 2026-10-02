@@ -1,136 +1,116 @@
-# Site Pantoja Imports
+# Pantoja Imports
 
-Vitrine de iPhones feita em HTML, CSS e JavaScript puros. Não tem login, carrinho nem pagamento: todo botão de compra leva ao WhatsApp com a mensagem já escrita.
+Vitrine online de uma loja de iPhones novos e seminovos em Castanhal-PA. Site estático em HTML, CSS e JavaScript puros, com catálogo gerado a partir de dados e pedidos encaminhados para o WhatsApp com a mensagem já escrita.
 
-## Estrutura
+**Site:** https://pantoja-imports.lucasfigueiredo-bsilva.workers.dev/
+
+| Desktop (tema claro) | Celular (tema escuro) |
+| --- | --- |
+| ![Página inicial no computador, tema claro](docs/screenshot-desktop.jpg) | ![Página inicial no celular, tema escuro](docs/screenshot-mobile.jpg) |
+
+## Funcionalidades
+
+- **Catálogo a partir de dados**: os cards, os filtros por condição (novos, seminovos, acessórios) e os contadores são gerados a partir de uma lista de produtos.
+- **Faixa "Em destaque"** com os produtos marcados como destaque; a seção some quando não há nenhum.
+- **Galeria por produto**: arrastar no celular, indicadores no computador e miniaturas na tela de detalhes. Produtos sem foto mostram um fundo neutro com o monograma da loja.
+- **Detalhes do produto em `<dialog>`**, que vira uma gaveta de baixo para cima no celular.
+- **Pedido pelo WhatsApp**: cada botão abre a conversa com modelo, armazenamento, cor, condição e preço já preenchidos. Avaliação de troca e consulta de entrega têm mensagens próprias.
+- **Bloco "Como funciona a entrega"** (área atendida, prazo, taxa e pagamento) alimentado pela configuração; campos vazios não aparecem.
+- **Depoimentos opcionais**: a seção só existe na página quando há depoimentos cadastrados.
+- **Tema claro e escuro**: segue o sistema na primeira visita e lembra a escolha feita no botão.
+- **Botão flutuante de WhatsApp**, que aparece depois que o topo da página sai da tela.
+- **SEO e compartilhamento**: título, descrição, URL canônica, Open Graph e ícones para navegador, iOS e Instagram.
+
+## Tecnologias e decisões técnicas
+
+- **HTML, CSS e JavaScript puros, sem framework e sem build.** É um site de poucas páginas com conteúdo que muda toda semana. Sem dependências, o carregamento fica rápido, a hospedagem é estática e qualquer ajuste é feito editando um arquivo de texto.
+- **Catálogo gerado a partir de dados.** Os produtos ficam em `produtos.js` e os dados da loja num objeto `CONFIG` no topo do `script.js`. A interface é montada com template strings, e todo texto vindo dos dados passa por uma função de escape antes de entrar no HTML.
+- **Mensagem de WhatsApp montada dinamicamente.** Os links usam `wa.me` com o texto gerado a partir do produto e codificado com `encodeURIComponent`. O número fica num único lugar.
+- **`<dialog>` nativo para os detalhes.** `showModal()` já entrega foco preso dentro do modal, fechamento com Esc e fundo com `::backdrop`, sem biblioteca de modal.
+- **`@property` para animar cores.** As cores do acabamento metálico são registradas como `<color>`. Assim o navegador consegue interpolá-las e os gradientes que dependem delas fazem a transição na troca de tema em vez de pular. Medindo com o trace do Chrome, propriedades registradas fazem as animações rodarem na thread principal, por isso as animações do site são curtas e só acontecem na entrada (nada fica animando sem parar).
+- **Decoração em SVG usada como máscara CSS.** Os SVGs de `assets/decor/` definem só a forma; a cor vem do `background`, então o mesmo arquivo funciona nos dois temas. As máscaras do topo são pré-carregadas com `crossorigin`, porque o navegador busca máscaras em modo CORS.
+- **Acessibilidade.** Link para pular ao conteúdo, foco visível, `aria-pressed` nos filtros, `aria-live` na grade, textos alternativos gerados a partir do produto, alvos de toque com no mínimo 44px, contraste AA e elementos decorativos com `aria-hidden`.
+- **Modo escuro.** Cores em custom properties, trocadas por `prefers-color-scheme` ou pelo atributo `data-theme`. Um script inline no `<head>` aplica o tema salvo antes do CSS (sem "piscar" o tema errado) e a `theme-color` da barra do navegador acompanha.
+- **`prefers-reduced-motion`.** Desliga as animações de entrada, o revelar ao rolar, o brilho da decoração e a rolagem suave.
+- **Desempenho.** Fonte variável Archivo hospedada no próprio site (um arquivo para textos e títulos expandidos, com `preload`), imagens WebP com `width`/`height` declarados e carregamento sob demanda, e cache configurado no `_headers`. No Lighthouse em perfil de celular (medição local): 95 em desempenho e 100 em acessibilidade, boas práticas e SEO, com CLS 0.
+
+## Estrutura de pastas
 
 ```
 pantoja-imports/
-├── index.html          estrutura da página (textos fixos, seções, SEO)
-├── style.css           visual: cores, espaçamentos, animações, celular, tema escuro
-├── produtos.js         OS APARELHOS DA VITRINE (único arquivo que você edita para mudar produtos)
-├── script.js           dados da loja (WhatsApp, endereço...), depoimentos e interações
-├── README.md           este guia
-├── wrangler.jsonc      configuração do Cloudflare
-├── _headers            cache e segurança (Cloudflare)
-├── .assetsignore       arquivos que não vão para o site
+├── index.html            estrutura da página, textos fixos, SEO e Open Graph
+├── style.css             tokens (cores, espaços, raios), layout, temas e animações
+├── script.js             CONFIG e DEPOIMENTOS no topo; abaixo, a lógica do site
+├── produtos.js           lista de produtos da vitrine
+├── wrangler.jsonc        configuração do Cloudflare Workers
+├── _headers              cache e cabeçalhos de segurança
+├── .assetsignore         arquivos que não são publicados
+├── docs/                 screenshots deste README
 └── assets/
-    ├── fontes/               Archivo (títulos expandidos e textos), servida pelo próprio site
-    ├── logo.svg              logo (monograma)
-    ├── favicon.svg           ícone da aba do navegador
-    ├── favicon-16.png        ícone da aba (navegadores antigos)
-    ├── favicon-32.png
-    ├── apple-touch-icon.png  ícone ao salvar o site na tela do iPhone
-    ├── logo-512.png          logo em PNG para usos gerais
-    ├── logo-instagram.svg    foto de perfil do Instagram (vetor)
-    ├── logo-instagram.png    foto de perfil do Instagram, 1080x1080
-    ├── og-image.png          imagem que aparece ao compartilhar o link
-    ├── loja.webp             (você adiciona) foto da loja para a seção "Sobre"
-    ├── hero.webp             (opcional) foto do topo da página
-    └── produtos/             (você adiciona) fotos reais dos aparelhos
+    ├── fontes/           Archivo (fonte variável)
+    ├── produtos/         fotos dos aparelhos (WebP 1200x1500)
+    ├── decor/            SVGs decorativos usados como máscara (usinado, moldura, régua, granulado)
+    ├── icone-conceitos/  conceitos alternativos do ícone e prancha de comparação
+    ├── logo.svg          ícone da loja (fonte dos PNGs)
+    ├── favicon.svg       ícone da aba, ajustado para 16px
+    ├── favicon-16.png, favicon-32.png, apple-touch-icon.png, logo-512.png
+    ├── logo-instagram.svg / .png   foto de perfil 1080x1080
+    └── og-image.png      imagem de compartilhamento 1200x630
 ```
 
-## Trocar o número do WhatsApp (e outros dados)
+## Como rodar localmente
 
-Arquivo: `script.js`, bloco `CONFIG`, no topo.
+Não há build nem dependências. Basta servir a pasta com qualquer servidor estático:
 
-```js
-whatsapp: '5591988887777', // só números: 55 + DDD + número
-instagram: 'pantojaimports', // sem o @
+```bash
+python -m http.server 8000
+# ou
+npx serve .
 ```
 
-No mesmo bloco ficam endereço, horário, TikTok, Facebook, CNPJ, mapa e as mensagens prontas. Todos os botões de WhatsApp do site usam esse número automaticamente.
+Depois, acesse `http://localhost:8000`. Abrir o `index.html` direto do disco também funciona, mas o navegador bloqueia a fonte e as máscaras decorativas em endereços `file://`.
 
-O nome da loja aparece também no `<title>` e nas tags `og:` do `index.html`. Se mudar o nome, troque lá também.
+## Como atualizar o catálogo e os dados da loja
 
-## Adicionar um produto
+**Produtos** ficam em `produtos.js`. Cada produto é um objeto na lista `PRODUTOS`, e a ordem da lista é a ordem no site.
 
-Arquivo: `produtos.js`. Copie um bloco inteiro (de `{` até `},`), cole abaixo e edite:
+| Campo | Descrição |
+| --- | --- |
+| `modelo` | nome exibido no card (ex.: `'iPhone 15 Pro'`) |
+| `armazenamento` | ex.: `'256 GB'` (vazio em acessórios) |
+| `cor` | nome da cor |
+| `condicao` | `'novo'`, `'seminovo'` ou `'acessorio'` |
+| `bateria` | saúde da bateria em %, só em seminovos |
+| `preco` | número em reais, ou `null` para exibir "Consulte" |
+| `selo` | etiqueta curta sobre a foto (ex.: `'Oportunidade'`) |
+| `destaque` | `true` inclui o produto na faixa "Em destaque" |
+| `fotos` | caminhos em `assets/produtos/`; a primeira é a principal. Aceita `{ src, alt }` |
+| `detalhes` | itens listados na tela de detalhes |
 
-```js
-{
-  modelo: 'iPhone 15 Pro',
-  armazenamento: '256 GB',
-  cor: 'Titânio preto',
-  condicao: 'seminovo',            // 'novo' | 'seminovo' | 'acessorio'
-  bateria: 90,                     // só seminovo
-  preco: 4999,                     // ou null para mostrar "Consulte"
-  selo: '',                        // ex.: 'Oportunidade' (aparece sobre a foto)
-  destaque: true,                  // true = aparece na faixa "Em destaque"
-  fotos: [
-    'assets/produtos/iphone-15-pro-preto-1.webp',
-    'assets/produtos/iphone-15-pro-preto-2.webp',
-  ],
-  detalhes: ['Saúde da bateria em 90%', 'Garantia da loja de 90 dias'],
-},
-```
+Fotos: WebP, 1200x1500 px (4:5), nomes sem espaço nem acento.
 
-- A ordem dos blocos é a ordem no site.
-- Para remover um aparelho vendido, apague o bloco.
-- O botão "Tenho interesse" já abre o WhatsApp com modelo, armazenamento, cor e condição escritos.
-- A faixa "Em destaque" (logo abaixo do topo) mostra os produtos com `destaque: true`. Mostra 4 por linha no computador e vira faixa de arrastar no celular. Se nenhum tiver destaque, a seção some.
+**Dados da loja** ficam no objeto `CONFIG`, no topo do `script.js`: nome, número do WhatsApp (só dígitos, com DDI e DDD), Instagram e outras redes, horário de atendimento, dados de entrega (`entrega.area`, `entrega.prazo`, `entrega.taxa`, `entrega.pagamento`), CNPJ, texto de parcelamento e as mensagens prontas do WhatsApp. Todos os botões usam esses valores automaticamente.
 
-## Usar fotos reais
+**Depoimentos** ficam no array `DEPOIMENTOS`, logo abaixo do `CONFIG`, no formato `{ nome, detalhe, texto }`. Com o array vazio, a seção não aparece.
 
-Só fotos tiradas por vocês dos aparelhos da loja. Nada de foto oficial da Apple.
+**Outros pontos de manutenção**
 
-**Formato para exportar:** WebP, **1200 x 1500 px** (vertical, proporção 4:5), qualidade por volta de 80, até uns 250 KB cada. Para converter de graça: squoosh.app (escolha WebP e redimensione para 1200 de largura).
+- Título, descrição e Open Graph ficam no `<head>` do `index.html`.
+- Cores, espaçamentos e raios ficam no bloco `:root` do `style.css`, com as cores do tema escuro logo abaixo.
+- Os PNGs do ícone são exportados a partir de `assets/logo.svg`.
+- Para usar uma foto no topo da página, adicione a classe `hero--com-foto` na seção do hero e descomente o bloco `<figure class="hero__foto">`. O layout passa a ter duas colunas e a decoração dá lugar à foto.
 
-1. Salve em `assets/produtos/` com nome simples, sem espaço nem acento: `iphone-15-pro-preto-1.webp`.
-2. Coloque os caminhos em `fotos` no produto. A primeira é a foto principal do card.
-3. Com mais de uma foto, o card vira uma galeria: arrastar no celular, pontinhos no computador e miniaturas ao abrir o produto.
+## Deploy
 
-O site gera a descrição da foto para leitores de tela ("iPhone 15 Pro, 256 GB, Titânio preto, foto 2 de 3"). Se quiser descrever melhor uma foto específica:
+Hospedado no **Cloudflare Workers** como site estático: o `wrangler.jsonc` publica a raiz do repositório como está, sem etapa de build. O repositório está conectado ao Cloudflare, então **cada push na branch `main` gera um deploy automático**.
 
-```js
-fotos: [{ src: 'assets/produtos/iphone-15-pro-preto-2.webp', alt: 'iPhone 15 Pro preto, lateral com pequeno risco' }],
-```
+- `_headers`: HTML, CSS e JS sempre revalidados; imagens com cache de 1 dia; fontes com cache de 1 ano. Inclui cabeçalhos de segurança.
+- `.assetsignore`: arquivos do repositório que não são publicados (configurações, README, `.git`).
 
-Produto sem foto (`fotos: []`) mostra um fundo neutro com o logo da loja bem apagado.
+## Autor
 
-## Foto no topo da página (hero)
+**Lucas Figueiredo**: [github.com/LucasFigueiredo23](https://github.com/LucasFigueiredo23)
 
-Hoje o topo é só texto. Para colocar uma foto depois, sem refazer nada:
+---
 
-1. Salve a foto em `assets/hero.webp` (mesmo formato: WebP 1200 x 1500).
-2. No `index.html`, na seção HERO, troque `<section class="hero" id="inicio">` por `<section class="hero hero--com-foto" id="inicio">`.
-3. Logo abaixo, descomente o bloco `<figure class="hero__foto">` (apague o `<!--` e o `-->` em volta) e escreva no `alt` o que aparece na foto.
-
-Com a classe `hero--com-foto`, o layout vira duas colunas no computador (texto à esquerda, foto à direita) e a foto desce para baixo do texto no celular.
-
-## Foto da loja
-
-Salve como `assets/loja.webp` (1200 x 1500) e, no `index.html`, seção SOBRE, descomente a linha do `<img src="assets/loja.webp" ...>`. Enquanto isso, aparece o monograma.
-
-## Mapa
-
-No Google Maps, abra o endereço da loja, clique em Compartilhar, depois em Incorporar um mapa. Copie só o link que está dentro de `src="..."` e cole em `CONFIG.mapaEmbed`.
-
-## Ícones de redes sociais
-
-Os botões usam ícones genéricos (balão de conversa e @). Se quiser os ícones oficiais do WhatsApp e do Instagram, baixe nas páginas de marca de cada empresa e siga as regras de uso delas.
-
-## Publicar de graça
-
-Qualquer uma destas funciona com os arquivos como estão: Cloudflare, Netlify (arraste a pasta em app.netlify.com/drop), Vercel ou GitHub Pages.
-
-### Cloudflare
-
-1. No painel do Cloudflare: Workers & Pages → Create → Import a repository → escolha `pantoja-imports`.
-2. Build command: deixe vazio. Deploy command: `npx wrangler deploy` (é o padrão).
-3. Salve. A cada push na `main` o site é atualizado sozinho.
-
-Arquivos usados pelo Cloudflare:
-- `wrangler.jsonc`: nome do projeto e pasta publicada (a raiz, sem build).
-- `.assetsignore`: o que não vai para o site (README, configs, `.git`).
-- `_headers`: cache (página, CSS, JS e `produtos.js` sempre atualizados; imagens guardadas por 1 dia; fontes por 1 ano) e cabeçalhos de segurança.
-
-A imagem de compartilhamento (`og:image`) está comentada no `index.html`. Descomente o bloco e coloque o endereço completo da imagem (1200 x 630), por exemplo `https://pantojaimports.com.br/assets/og-image.png`. Se mudar de domínio, troque também `canonical` e `og:url`. Sem `og:image`, o WhatsApp mostra o link sem imagem.
-
-## Tema claro e escuro
-
-Na primeira visita o site segue o tema do celular/computador da pessoa. Se ela tocar no botão de lua/sol, a escolha fica salva naquele aparelho.
-
-## Cores, espaços e fontes
-
-Arquivo: `style.css`, bloco `:root` no início: cores, escala de espaçamento (`--e-1` a `--e-8`), raios (`--raio-*`), sombras e velocidades de animação. As cores do modo escuro estão logo abaixo. Fonte: Archivo, em `assets/fontes/`. É uma fonte variável: os títulos usam a versão expandida (`--display-largura: 125%`) e os textos a normal. Para títulos menos largos, diminua esse valor (mínimo 100%).
+iPhone é marca registrada da Apple Inc. Este projeto não é afiliado à Apple.
