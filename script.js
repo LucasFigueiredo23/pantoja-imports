@@ -43,13 +43,15 @@ const CONFIG = {
   },
 };
 
-/* ---------- 2. DEPOIMENTOS (troque pelos reais, com autorização do cliente) ---------- */
+/* ---------- 2. DEPOIMENTOS (só reais, com autorização do cliente) ----------
+   Lista vazia = a seção "Quem já comprou" não aparece no site.
+   Com pelo menos um item, ela volta sozinha (com as setas do carrossel). */
 const DEPOIMENTOS = [
-  { nome: 'Juliana M.', detalhe: 'Comprou um iPhone 15', texto: 'Atendimento muito rápido no WhatsApp. O aparelho chegou exatamente como nas fotos, bateria ótima.' },
-  { nome: 'Rafael S.', detalhe: 'Deu o usado na troca', texto: 'Dei meu 12 na troca e peguei um 15 Pro. Avaliação justa e resolvi tudo no mesmo dia.' },
-  { nome: 'Carla T.', detalhe: 'Comprou um iPhone 17', texto: 'Tirei todas as dúvidas antes de fechar. Lacrado, com nota e parcelado no cartão.' },
-  { nome: 'Diego A.', detalhe: 'Comprou um iPhone 14 Pro', texto: 'Segundo aparelho que compro aqui. Seminovo impecável, parecia novo.' },
-  { nome: 'Patrícia L.', detalhe: 'Comprou acessórios', texto: 'Aplicaram a película na hora e ainda deram dicas para cuidar da bateria.' },
+  // Um depoimento por linha, neste formato:
+  // { nome: 'Juliana M.', detalhe: 'Comprou um iPhone 15', texto: 'Atendimento rápido e o aparelho chegou como nas fotos.' },
+  //   nome     primeiro nome e inicial do sobrenome
+  //   detalhe  o que a pessoa comprou ou fez (aparece embaixo do nome)
+  //   texto    o depoimento, curto (até umas 3 linhas)
 ];
 
 
@@ -397,6 +399,9 @@ function iniciarWhatsFlutuante() {
 
 /* ---------- Depoimentos (carrossel) ---------- */
 function iniciarDepoimentos() {
+  if (!DEPOIMENTOS.length) return; // a seção continua escondida (hidden no HTML)
+  $('#secaoDepoimentos').hidden = false;
+
   const lista = $('#depoimentos');
   lista.innerHTML = DEPOIMENTOS.map((d) => `
     <li class="depo">
