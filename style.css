@@ -1,8 +1,8 @@
 /* =============================================================
    Pantoja Imports: folha de estilos
    -------------------------------------------------------------
-   1. Fontes e tokens (cores, espaços, raios, sombras)
-   2. Base                                9. Troca
+   1. Fontes e tokens (cores, espaços, raios, sombras, metal)
+   2. Base e decoração reutilizável      9. Troca
    3. Botões e links                     10. Sobre
    4. Topo                               11. Depoimentos
    5. Hero                               12. Contato
@@ -23,6 +23,13 @@
   src: url('assets/fontes/archivo-latin.woff2') format('woff2');
 }
 
+/* Cores do acabamento metálico registradas com @property: assim o navegador sabe que são
+   cores e consegue animar os gradientes que as usam quando o tema muda (sem isso, pulam) */
+@property --metal-claro { syntax: '<color>'; inherits: true; initial-value: #FBF7F3; }
+@property --metal-medio { syntax: '<color>'; inherits: true; initial-value: #BFA48F; }
+@property --metal-escuro { syntax: '<color>'; inherits: true; initial-value: #7A5E47; }
+@property --halo { syntax: '<color>'; inherits: true; initial-value: transparent; }
+
 :root {
   /* Paleta inspirada nos acabamentos do aparelho: alumínio, grafite e titânio */
   --bg: #EDEEEF;            /* alumínio */
@@ -38,6 +45,15 @@
   --verde: #1B9E4F;         /* WhatsApp */
   --verde-texto: #157A3D;   /* verde legível como texto */
   --sombra-cor: 20 20 25;
+
+  /* Acabamento metálico e decoração (assets/decor) */
+  --metal-claro: #FBF7F3;   /* reflexo */
+  --metal-medio: #BFA48F;   /* titânio */
+  --metal-escuro: #7A5E47;  /* sombra do metal */
+  --halo: rgb(191 164 143 / .30); /* brilho suave de fundo */
+  --decor-linhas: .11;      /* opacidade das linhas usinadas */
+  --grao: .05;              /* opacidade do granulado */
+  --reflexo: rgb(255 255 255 / .7); /* reflexo no vidro */
 
   --fonte-display: 'Archivo', 'Arial Black', system-ui, sans-serif;
   --fonte-texto: 'Archivo', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -84,6 +100,8 @@
     --tinta: #EDEEEF; --tinta-suave: #A4A7AC; --linha: #2C2E32; --linha-forte: #6E7177;
     --acento: #CDB4A0; --acento-suave: #8C735F; --sobre-tinta: #131416;
     --verde-texto: #3FBF73; --sombra-cor: 0 0 0;
+    --metal-claro: #E9DACB; --metal-medio: #9C8270; --metal-escuro: #3B312A;
+    --halo: rgb(140 115 95 / .22); --decor-linhas: .09; --grao: .06; --reflexo: rgb(255 255 255 / .09);
     color-scheme: dark;
   }
 }
@@ -92,6 +110,8 @@
   --tinta: #EDEEEF; --tinta-suave: #A4A7AC; --linha: #2C2E32; --linha-forte: #6E7177;
   --acento: #CDB4A0; --acento-suave: #8C735F; --sobre-tinta: #131416;
   --verde-texto: #3FBF73; --sombra-cor: 0 0 0;
+  --metal-claro: #E9DACB; --metal-medio: #9C8270; --metal-escuro: #3B312A;
+  --halo: rgb(140 115 95 / .22); --decor-linhas: .09; --grao: .06; --reflexo: rgb(255 255 255 / .09);
   color-scheme: dark;
 }
 
@@ -100,6 +120,8 @@
   box-sizing: border-box;
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
+  /* Só funciona porque essas cores foram registradas com @property (seção 1) */
+  transition: --metal-claro .5s, --metal-medio .5s, --metal-escuro .5s, --halo .5s;
 }
 *, *::before, *::after { box-sizing: inherit; margin: 0; }
 [hidden] { display: none !important; }
@@ -149,6 +171,34 @@ p { text-wrap: pretty; }
 }
 
 :focus-visible { outline: 2.5px solid var(--acento); outline-offset: 3px; }
+
+/* Decoração reutilizável. As formas ficam em assets/decor/ e entram como máscara:
+   o SVG dá o desenho e o background dá a cor, então tudo acompanha o tema sozinho. */
+
+/* Ponto final em titânio nos títulos, o mesmo ponto do ícone "P." */
+.ponto { color: var(--acento); }
+
+/* Régua: divisória com marcações de precisão, alinhada ao conteúdo, no topo da seção */
+.com-regua { position: relative; }
+.com-regua::before,
+.com-regua::after {
+  content: ''; position: absolute; top: 0; pointer-events: none;
+  left: calc((100% - min(100% - 2 * var(--gutter), var(--container))) / 2);
+}
+.com-regua::before {
+  width: 161px; height: 10px; background: var(--linha-forte); opacity: .75;
+  -webkit-mask: url('assets/decor/regua.svg') 0 0 / 100% 100% no-repeat;
+  mask: url('assets/decor/regua.svg') 0 0 / 100% 100% no-repeat;
+}
+.com-regua::after { right: 0; height: 1px; background: linear-gradient(90deg, var(--linha-forte), var(--linha) 25%, var(--linha) 70%, transparent); }
+
+/* Aro metálico fino nos cartões: borda em gradiente, como uma quina polida */
+.aro-metal {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--superficie), var(--superficie)) padding-box,
+    linear-gradient(150deg, color-mix(in srgb, var(--metal-claro) 75%, var(--linha)), var(--linha) 38%, var(--linha) 68%, color-mix(in srgb, var(--metal-medio) 70%, var(--linha))) border-box;
+}
 
 /* ---------- 3. Botões e links ---------- */
 .btn {
@@ -207,6 +257,7 @@ p { text-wrap: pretty; }
   transition: border-color .3s, background-color .35s;
 }
 .topo.rolou { border-bottom-color: var(--linha); }
+.topo:not(.rolou) { background: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; }
 
 .topo__inner { display: flex; align-items: center; justify-content: space-between; gap: var(--e-5); height: var(--topo-altura); }
 
@@ -280,12 +331,80 @@ p { text-wrap: pretty; }
   padding-top: calc(var(--topo-altura) + clamp(3rem, 10vw, 7.5rem));
   padding-bottom: clamp(3rem, 8vw, 6rem);
 }
-/* Brilho suave de fundo, só CSS */
+/* Fundo: brilho de titânio atrás da decoração + granulado leve por cima de tudo */
 .hero::before {
-  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  content: ''; position: absolute; inset: 0; z-index: -3; pointer-events: none;
   background:
-    radial-gradient(60% 70% at 90% 10%, color-mix(in srgb, var(--acento-suave) 24%, transparent), transparent 70%);
+    radial-gradient(42% 62% at 77% 50%, var(--halo), transparent 72%),
+    radial-gradient(40% 50% at 0% 0%, color-mix(in srgb, var(--halo) 55%, transparent), transparent 70%);
+  -webkit-mask: linear-gradient(#000 60%, transparent); mask: linear-gradient(#000 60%, transparent);
 }
+.hero::after {
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: var(--tinta); opacity: var(--grao);
+  /* granulado + degradê: o fundo do hero some aos poucos, sem emenda com a próxima seção */
+  -webkit-mask: url('assets/decor/grao.svg') 0 0 / 180px repeat, linear-gradient(#000 55%, transparent);
+  -webkit-mask-composite: source-in;
+  mask: url('assets/decor/grao.svg') 0 0 / 180px repeat intersect, linear-gradient(#000 55%, transparent);
+}
+
+/* Decoração do hero: tudo atrás do texto, some no fim da seção */
+.hero__decor {
+  position: absolute; inset: 0; z-index: -2; pointer-events: none;
+  -webkit-mask: linear-gradient(#000 78%, transparent); mask: linear-gradient(#000 78%, transparent);
+}
+.hero--com-foto .hero__decor { display: none; }
+
+.hero__usinado {
+  position: absolute; left: 77%; top: 50%; width: min(1150px, 95vw); aspect-ratio: 1;
+  translate: -50% -50%;
+  background: var(--tinta); opacity: var(--decor-linhas);
+  -webkit-mask: url('assets/decor/usinado.svg') center / contain no-repeat;
+  mask: url('assets/decor/usinado.svg') center / contain no-repeat;
+}
+
+/* Aparelhos genéricos: aro de titânio (assets/decor/moldura.svg) e vidro */
+.aparelho { position: absolute; left: 77%; top: 50%; aspect-ratio: 300 / 620; }
+.aparelho--frente { width: clamp(200px, 19vw, 290px); translate: -38% -50%; rotate: -9deg; }
+/* O de trás fica atrás e à direita do da frente: longe do texto em qualquer largura */
+.aparelho--fundo { width: clamp(170px, 15.5vw, 240px); translate: 34% -64%; rotate: 7deg; opacity: .5; }
+@media (max-width: 1280px) { .aparelho--fundo { display: none; } }
+
+/* O aro: um gradiente cônico (reflexos do metal) recortado pela máscara.
+   Fica parado de propósito: com @property na página, o Chrome roda animações na thread
+   principal, e um brilho girando sem parar gastaria CPU e bateria no celular */
+.aparelho__aro {
+  position: absolute; inset: 0;
+  background: conic-gradient(from 200deg, var(--metal-escuro), var(--metal-claro) 9%, var(--metal-medio) 20%, var(--metal-escuro) 36%, var(--metal-medio) 50%, var(--metal-claro) 58%, var(--metal-medio) 70%, var(--metal-escuro));
+  -webkit-mask: url('assets/decor/moldura.svg') center / 100% 100% no-repeat;
+  mask: url('assets/decor/moldura.svg') center / 100% 100% no-repeat;
+}
+.aparelho--fundo .aparelho__aro { background: conic-gradient(from 20deg, var(--metal-escuro), var(--metal-claro) 12%, var(--metal-medio) 26%, var(--metal-escuro) 45%, var(--metal-claro) 62%, var(--metal-medio) 78%, var(--metal-escuro)); }
+
+/* Vidro: reflexo diagonal e um brilho de titânio por dentro */
+.aparelho__vidro {
+  position: absolute; inset: 2.6% 5.3%; border-radius: 16% / 7.3%;
+  background:
+    linear-gradient(118deg, transparent 30%, var(--reflexo) 41%, transparent 42.5%, transparent 46%, color-mix(in srgb, var(--reflexo) 50%, transparent) 47.5%, transparent 58%),
+    radial-gradient(100% 55% at 20% 8%, var(--halo), transparent 70%),
+    linear-gradient(170deg, color-mix(in srgb, var(--superficie) 55%, transparent), color-mix(in srgb, var(--bg-alt) 20%, transparent));
+  box-shadow: 0 50px 90px -40px rgb(var(--sombra-cor) / .45);
+}
+
+/* Conta de titânio: o "ponto" do ícone solto na composição */
+.hero__conta {
+  position: absolute; left: calc(77% - 7.5vw); top: calc(50% + 15.5vw);
+  width: clamp(14px, 1.5vw, 22px); aspect-ratio: 1; border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, var(--metal-claro), var(--metal-medio) 50%, var(--metal-escuro));
+  box-shadow: 0 6px 14px rgb(var(--sombra-cor) / .22);
+}
+
+/* Entrada da decoração: só desliza, sem esmaecer (assim não atrasa o LCP).
+   Desligada com prefers-reduced-motion */
+.hero__decor > * { animation: decor-entra 1.2s var(--ease) both; }
+.hero__decor > .aparelho--frente { animation-delay: 80ms; }
+.hero__decor > .hero__conta { animation-delay: 200ms; }
+@keyframes decor-entra { from { transform: translateY(28px); } }
 
 .hero__grid { display: grid; align-items: center; gap: clamp(var(--e-6), 5vw, var(--e-8)); }
 
@@ -338,15 +457,24 @@ p { text-wrap: pretty; }
 @media (max-width: 860px) {
   .hero--com-foto .hero__grid { grid-template-columns: 1fr; }
   .hero__foto { width: min(100%, 480px); border-radius: var(--raio-g); }
+
+  /* No celular o texto ocupa a largura toda: a decoração fica no canto de baixo,
+     ao lado da lista de garantias, e nunca passa por trás do texto */
+  .hero { padding-bottom: clamp(4rem, 12vw, 6rem); }
+  .hero__confianca { flex-direction: column; }
+  .hero__decor { -webkit-mask: linear-gradient(#000 84%, transparent); mask: linear-gradient(#000 84%, transparent); }
+  .hero__usinado { left: auto; top: auto; right: 0; bottom: 0; width: 560px; translate: 38% 50%; }
+  .aparelho--frente { left: auto; top: auto; right: -3%; bottom: 0; width: clamp(130px, 31vw, 210px); translate: 0 42%; rotate: -12deg; }
+  .hero__conta { display: none; }
 }
 @media (max-width: 560px) {
-  .hero__confianca { flex-direction: column; margin-top: var(--e-6); }
+  .hero__confianca { margin-top: var(--e-6); }
   .hero__botoes .btn { flex: 1 1 auto; }
 }
 
 /* ---------- 6. Destaques ---------- */
 .destaques { padding-bottom: clamp(3rem, 7vw, 5rem); }
-.destaques__topo { display: flex; align-items: end; justify-content: space-between; gap: var(--e-4); margin-bottom: var(--e-5); }
+.destaques__topo { display: flex; align-items: baseline; justify-content: space-between; gap: var(--e-4); margin-bottom: var(--e-5); }
 .destaques h2 { font-size: clamp(1.4rem, 2.6vw, 2rem); }
 
 /* 4 por linha no computador; com menos, eles se esticam; com mais, a faixa rola */
@@ -529,31 +657,57 @@ p { text-wrap: pretty; }
 
 /* ---------- 9. Troca ---------- */
 .troca__caixa {
+  position: relative; isolation: isolate; overflow: hidden;
   display: grid; grid-template-columns: 1fr auto; align-items: center; gap: var(--e-6);
   padding: clamp(var(--e-6), 5vw, var(--e-8));
   border-radius: var(--raio-xg);
   background: var(--tinta); color: var(--sobre-tinta);
 }
+/* Linhas usinadas saindo do canto direito (assets/decor/usinado.svg) */
+.troca__caixa::before {
+  content: ''; position: absolute; z-index: -1; right: -260px; top: 50%; width: 820px; aspect-ratio: 1; translate: 0 -50%;
+  background: var(--sobre-tinta); opacity: .12; pointer-events: none;
+  -webkit-mask: url('assets/decor/usinado.svg') center / contain no-repeat;
+  mask: url('assets/decor/usinado.svg') center / contain no-repeat;
+}
+/* Brilho de titânio no canto e quina polida no topo */
+.troca__caixa::after {
+  content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none;
+  background: radial-gradient(45% 100% at 100% 0%, color-mix(in srgb, var(--acento-suave) 26%, transparent), transparent 70%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .09);
+}
+.troca .ponto { color: var(--acento-suave); }
 .troca h2 { max-width: 20ch; }
 .troca p { max-width: 36rem; margin-top: var(--e-4); opacity: .8; }
 .troca :focus-visible { outline-color: var(--sobre-tinta); }
-@media (max-width: 760px) { .troca__caixa { grid-template-columns: 1fr; } .troca .btn { justify-self: start; } }
+@media (max-width: 760px) {
+  .troca__caixa { grid-template-columns: 1fr; }
+  .troca .btn { justify-self: start; }
+  /* Caixa estreita: as linhas descem para o canto de baixo, longe do parágrafo */
+  .troca__caixa::before { right: -250px; top: auto; bottom: -250px; width: 500px; translate: none; opacity: .1; }
+}
 
 /* ---------- 10. Sobre ---------- */
 .sobre__grid { display: grid; grid-template-columns: .9fr 1.1fr; align-items: center; gap: clamp(var(--e-6), 6vw, 5.5rem); }
 
 /* Ficha de revisão: o elemento visual da seção (não depende de foto) */
 .sobre__visual {
-  position: relative; display: grid; place-items: center;
+  position: relative; isolation: isolate; overflow: hidden; display: grid; place-items: center;
   aspect-ratio: 4 / 5; padding: clamp(var(--e-6), 5vw, var(--e-8));
   border-radius: var(--raio-xg);
   background: radial-gradient(120% 90% at 50% 30%, var(--superficie), var(--bg-alt));
+}
+.sobre__visual::before {
+  content: ''; position: absolute; z-index: -1; left: 50%; top: 50%; width: 150%; aspect-ratio: 1; translate: -50% -50%;
+  background: var(--tinta); opacity: var(--decor-linhas); pointer-events: none;
+  -webkit-mask: url('assets/decor/usinado.svg') center / contain no-repeat;
+  mask: url('assets/decor/usinado.svg') center / contain no-repeat;
 }
 .ficha {
   position: relative; width: min(100%, 21rem);
   padding: var(--e-5) var(--e-5) 4.75rem;
   border-radius: var(--raio-g);
-  background: var(--superficie); box-shadow: var(--sombra-2);
+  box-shadow: var(--sombra-2); /* fundo e borda: .aro-metal */
   transform: rotate(-2.5deg);
 }
 .ficha__titulo { font-size: .75rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--tinta-suave); }
@@ -639,8 +793,7 @@ p { text-wrap: pretty; }
 .entrega {
   padding: clamp(var(--e-5), 4vw, var(--e-7));
   border-radius: var(--raio-xg);
-  background: var(--superficie); box-shadow: var(--sombra-1);
-  transition: background-color .35s;
+  box-shadow: var(--sombra-1); /* fundo e borda: .aro-metal */
 }
 .entrega h3 { font-size: clamp(1.35rem, 2.2vw, 1.75rem); }
 .entrega > p { margin-top: var(--e-3); color: var(--tinta-suave); }
@@ -657,7 +810,7 @@ p { text-wrap: pretty; }
 @media (max-width: 480px) { .contato__info > div { grid-template-columns: 1fr; gap: .2rem; } }
 
 /* ---------- 13. Rodapé e WhatsApp flutuante ---------- */
-.rodape { padding: var(--e-7) 0 3.5rem; border-top: 1px solid var(--linha); }
+.rodape { padding: var(--e-7) 0 3.5rem; } /* a divisória de cima é a régua (.com-regua) */
 .rodape__inner { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: var(--e-5) var(--e-6); }
 .rodape__links { display: flex; justify-content: flex-end; gap: var(--e-5); }
 .rodape__links a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 500; text-decoration: none; color: var(--tinta-suave); transition: color var(--t-media); }
@@ -753,6 +906,7 @@ html.travado { overflow: hidden; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+  .hero__decor > * { animation: none !important; }
   *, *::before, *::after {
     animation-duration: .01ms !important;
     animation-iteration-count: 1 !important;

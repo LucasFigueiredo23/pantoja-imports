@@ -40,6 +40,10 @@
 
   <!-- Fonte do site (Archivo, títulos e textos) carregada primeiro -->
   <link rel="preload" href="assets/fontes/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- Linhas e aro do topo (máscaras CSS): carregados cedo para não atrasar o LCP.
+       crossorigin é obrigatório: o navegador busca máscaras em modo CORS -->
+  <link rel="preload" href="assets/decor/usinado.svg" as="image" type="image/svg+xml" crossorigin>
+  <link rel="preload" href="assets/decor/moldura.svg" as="image" type="image/svg+xml" crossorigin>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -83,12 +87,22 @@
          Para colocar uma foto aqui depois:
          1. adicione a classe "hero--com-foto" na <section> abaixo;
          2. descomente o <figure class="hero__foto"> no fim do bloco.
-         O layout vira duas colunas sozinho (texto à esquerda, foto à direita). -->
+         O layout vira duas colunas sozinho (texto à esquerda, foto à direita)
+         e a decoração abaixo some para dar lugar à foto. -->
     <section class="hero" id="inicio">
+      <!-- Decoração (só visual): linhas usinadas, dois aparelhos genéricos de vidro e titânio
+           e uma conta de titânio. Formas em assets/decor/, cores e posição no style.css (seção 5). -->
+      <div class="hero__decor" aria-hidden="true">
+        <div class="hero__usinado"></div>
+        <div class="aparelho aparelho--fundo"><div class="aparelho__aro"></div></div>
+        <div class="aparelho aparelho--frente"><div class="aparelho__vidro"></div><div class="aparelho__aro"></div></div>
+        <div class="hero__conta"></div>
+      </div>
+
       <div class="container hero__grid">
         <div class="hero__texto">
           <p class="hero__sobretitulo">Loja online de iPhones em Castanhal-PA</p>
-          <h1>Seu próximo iPhone, com procedência e garantia.</h1>
+          <h1>Seu próximo iPhone, com procedência e garantia<span class="ponto">.</span></h1>
           <p class="hero__sub">Aparelhos novos e seminovos revisados, com nota e garantia da loja. Escolha o seu, fale direto com a gente pelo WhatsApp e receba no seu endereço.</p>
           <div class="hero__botoes">
             <a class="btn btn--escuro" href="#produtos">Ver produtos</a>
@@ -174,7 +188,7 @@
       <div class="container">
         <div class="troca__caixa revelar">
           <div>
-            <h2 id="tituloTroca">Seu iPhone usado vale desconto no próximo.</h2>
+            <h2 id="tituloTroca">Seu iPhone usado vale desconto no próximo<span class="ponto">.</span></h2>
             <p>Mande o modelo, a capacidade e a saúde da bateria pelo WhatsApp. A gente avalia e responde com o valor da troca.</p>
           </div>
           <a class="btn btn--claro js-whats" data-msg="troca" href="#contato">Avaliar meu iPhone</a>
@@ -188,7 +202,7 @@
         <!-- Ficha de revisão: ilustra o texto ao lado, sem depender de foto.
              É decorativa (aria-hidden): o mesmo conteúdo já está no parágrafo. -->
         <div class="sobre__visual revelar" aria-hidden="true">
-          <div class="ficha">
+          <div class="ficha aro-metal">
             <p class="ficha__titulo">Revisão de seminovo</p>
             <ul class="ficha__itens">
               <li>Bateria<span>ok</span></li>
@@ -202,7 +216,7 @@
         </div>
 
         <div class="sobre__texto revelar">
-          <h2>Quem compra, volta e indica.</h2>
+          <h2>Quem compra, volta e indica<span class="ponto">.</span></h2>
           <p>A <span data-config="nomeLoja">Pantoja Imports</span> nasceu da vontade de vender iPhone do jeito que a gente gostaria de comprar: aparelho conferido, preço claro e atendimento de verdade, antes e depois da venda.</p>
           <p>Todo seminovo passa por revisão completa de bateria, câmeras, Face ID, tela e sinal. Se não estiver bom, não vai para a vitrine.</p>
           <p class="sobre__assinatura"><strong data-config="dono">Amir Pantoja</strong><span>Fundador</span></p>
@@ -230,7 +244,7 @@
     </section>
 
     <!-- ===================== CONTATO ===================== -->
-    <section class="secao contato" id="contato">
+    <section class="secao com-regua contato" id="contato">
       <div class="container contato__grid">
         <div class="contato__texto revelar">
           <h2>Fale com a gente</h2>
@@ -254,7 +268,7 @@
         </div>
 
         <!-- Como funciona a entrega: as linhas vêm de CONFIG.entrega (script.js) -->
-        <div class="entrega revelar" id="entrega">
+        <div class="entrega aro-metal revelar" id="entrega">
           <h3>Como funciona a entrega</h3>
           <p>Você escolhe o aparelho, fecha o pedido pelo WhatsApp e recebe no seu endereço.</p>
           <dl class="entrega__lista" id="entregaLista"></dl>
@@ -265,7 +279,7 @@
   </main>
 
   <!-- ===================== RODAPÉ ===================== -->
-  <footer class="rodape">
+  <footer class="rodape com-regua">
     <div class="container rodape__inner">
       <a href="#inicio" class="marca" aria-label="Voltar ao início">
         <svg class="marca__icone" viewBox="0 0 64 64" aria-hidden="true">

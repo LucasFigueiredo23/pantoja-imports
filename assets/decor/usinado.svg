@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000">
+  <!-- Linhas concêntricas, como alumínio usinado no torno.
+       Usado como máscara no CSS: a forma vem daqui, a cor vem do tema. Some no centro e na borda. -->
+  <defs>
+    <radialGradient id="esmaecer" cx="500" cy="500" r="500" gradientUnits="userSpaceOnUse">
+      <stop offset=".08" stop-opacity="0"/>
+      <stop offset=".3" stop-opacity="1"/>
+      <stop offset=".7" stop-opacity=".7"/>
+      <stop offset="1" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g fill="none" stroke="url(#esmaecer)" stroke-width="1.25">
+    <circle cx="500" cy="500" r="48"/>
+    <circle cx="500" cy="500" r="60"/>
+    <circle cx="500" cy="500" r="72"/>
+    <circle cx="500" cy="500" r="84"/>
+    <circle cx="500" cy="500" r="96"/>
+    <circle cx="500" cy="500" r="108"/>
+    <circle cx="500" cy="500" r="120"/>
+    <circle cx="500" cy="500" r="132"/>
+    <circle cx="500" cy="500" r="144"/>
+    <circle cx="500" cy="500" r="156"/>
+    <circle cx="500" cy="500" r="168"/>
+    <circle cx="500" cy="500" r="180"/>
+    <circle cx="500" cy="500" r="192"/>
+    <circle cx="500" cy="500" r="204"/>
+    <circle cx="500" cy="500" r="216"/>
+    <circle cx="500" cy="500" r="228"/>
+    <circle cx="500" cy="500" r="240"/>
+    <circle cx="500" cy="500" r="252"/>
+    <circle cx="500" cy="500" r="264"/>
+    <circle cx="500" cy="500" r="276"/>
+    <circle cx="500" cy="500" r="288"/>
+    <circle cx="500" cy="500" r="300"/>
+    <circle cx="500" cy="500" r="312"/>
+    <circle cx="500" cy="500" r="324"/>
+    <circle cx="500" cy="500" r="336"/>
+    <circle cx="500" cy="500" r="348"/>
+    <circle cx="500" cy="500" r="360"/>
+    <circle cx="500" cy="500" r="372"/>
+    <circle cx="500" cy="500" r="384"/>
+    <circle cx="500" cy="500" r="396"/>
+    <circle cx="500" cy="500" r="408"/>
+    <circle cx="500" cy="500" r="420"/>
+    <circle cx="500" cy="500" r="432"/>
+    <circle cx="500" cy="500" r="444"/>
+    <circle cx="500" cy="500" r="456"/>
+    <circle cx="500" cy="500" r="468"/>
+    <circle cx="500" cy="500" r="480"/>
+    <circle cx="500" cy="500" r="492"/>
+  </g>
+</svg>
