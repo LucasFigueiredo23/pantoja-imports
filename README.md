@@ -12,7 +12,8 @@ Vitrine online de uma loja de iPhones novos e seminovos em Castanhal-PA. Site es
 
 - **Catálogo a partir de dados**: os cards, os filtros por condição (novos, seminovos, acessórios) e os contadores são gerados a partir de uma lista de produtos.
 - **Faixa "Em destaque"** com os produtos marcados como destaque; a seção some quando não há nenhum.
-- **Galeria por produto**: arrastar no celular, indicadores no computador e miniaturas na tela de detalhes. Produtos sem foto mostram um fundo neutro com o monograma da loja.
+- **Galeria por produto**: arrastar no celular, indicadores no computador e miniaturas na tela de detalhes. Toda foto segue o mesmo enquadramento (4:5, preenchendo e centralizada). Produtos sem foto mostram um fundo neutro com o monograma da loja.
+- **Modo recorte**: fotos com fundo transparente mostram o aparelho inteiro, centralizado, sobre um tom da cor dele.
 - **Detalhes do produto em `<dialog>`**, que vira uma gaveta de baixo para cima no celular.
 - **Pedido pelo WhatsApp**: cada botão abre a conversa com modelo, armazenamento, cor, condição e preço já preenchidos. Avaliação de troca e consulta de entrega têm mensagens próprias.
 - **Bloco "Como funciona a entrega"** (área atendida, prazo, taxa e pagamento) alimentado pela configuração; campos vazios não aparecem.
@@ -28,11 +29,12 @@ Vitrine online de uma loja de iPhones novos e seminovos em Castanhal-PA. Site es
 - **Mensagem de WhatsApp montada dinamicamente.** Os links usam `wa.me` com o texto gerado a partir do produto e codificado com `encodeURIComponent`. O número fica num único lugar.
 - **`<dialog>` nativo para os detalhes.** `showModal()` já entrega foco preso dentro do modal, fechamento com Esc e fundo com `::backdrop`, sem biblioteca de modal.
 - **`@property` para animar cores.** As cores do acabamento metálico são registradas como `<color>`. Assim o navegador consegue interpolá-las e os gradientes que dependem delas fazem a transição na troca de tema em vez de pular. Medindo com o trace do Chrome, propriedades registradas fazem as animações rodarem na thread principal, por isso as animações do site são curtas e só acontecem na entrada (nada fica animando sem parar).
-- **Decoração em SVG usada como máscara CSS.** Os SVGs de `assets/decor/` definem só a forma; a cor vem do `background`, então o mesmo arquivo funciona nos dois temas. As máscaras do topo são pré-carregadas com `crossorigin`, porque o navegador busca máscaras em modo CORS.
+- **Hero só com tipografia.** Sem foto nem ilustração: o título é o ponto de foco, com cada frase numa linha no computador, sobre fundo liso e um brilho neutro muito sutil.
+- **Decoração em SVG usada como máscara CSS.** Os SVGs de `assets/decor/` definem só a forma; a cor vem do `background`, então o mesmo arquivo funciona nos dois temas.
 - **Acessibilidade.** Link para pular ao conteúdo, foco visível, `aria-pressed` nos filtros, `aria-live` na grade, textos alternativos gerados a partir do produto, alvos de toque com no mínimo 44px, contraste AA e elementos decorativos com `aria-hidden`.
 - **Modo escuro.** Cores em custom properties, trocadas por `prefers-color-scheme` ou pelo atributo `data-theme`. Um script inline no `<head>` aplica o tema salvo antes do CSS (sem "piscar" o tema errado) e a `theme-color` da barra do navegador acompanha.
 - **`prefers-reduced-motion`.** Desliga as animações de entrada, o revelar ao rolar, o brilho da decoração e a rolagem suave.
-- **Desempenho.** Fonte variável Archivo hospedada no próprio site (um arquivo para textos e títulos expandidos, com `preload`), imagens WebP com `width`/`height` declarados e carregamento sob demanda, e cache configurado no `_headers`. No Lighthouse em perfil de celular (medição local): 95 em desempenho e 100 em acessibilidade, boas práticas e SEO, com CLS 0.
+- **Desempenho.** Fonte variável Archivo hospedada no próprio site (um arquivo para textos e títulos expandidos, com `preload`), imagens WebP com `width`/`height` declarados e carregamento sob demanda, e cache configurado no `_headers`. No Lighthouse em perfil de celular (medição local): 96 em desempenho e 100 em acessibilidade, boas práticas e SEO, com CLS 0.
 
 ## Estrutura de pastas
 
@@ -49,7 +51,7 @@ pantoja-imports/
 └── assets/
     ├── fontes/           Archivo (fonte variável)
     ├── produtos/         fotos dos aparelhos (WebP 1200x1500)
-    ├── decor/            SVGs decorativos usados como máscara (usinado, moldura, régua, granulado)
+    ├── decor/            SVGs decorativos usados como máscara (usinado, régua, granulado)
     ├── icone-conceitos/  conceitos alternativos do ícone e prancha de comparação
     ├── logo.svg          ícone da loja (fonte dos PNGs)
     ├── favicon.svg       ícone da aba, ajustado para 16px
@@ -85,9 +87,11 @@ Depois, acesse `http://localhost:8000`. Abrir o `index.html` direto do disco tam
 | `selo` | etiqueta curta sobre a foto (ex.: `'Oportunidade'`) |
 | `destaque` | `true` inclui o produto na faixa "Em destaque" |
 | `fotos` | caminhos em `assets/produtos/`; a primeira é a principal. Aceita `{ src, alt }` |
+| `recorte` | `true` quando as fotos têm fundo transparente: o aparelho aparece inteiro sobre a cor dele |
+| `corHex` | cor do aparelho em hexadecimal (ex.: `'#efcfcd'`), usada no fundo do modo recorte |
 | `detalhes` | itens listados na tela de detalhes |
 
-Fotos: WebP, 1200x1500 px (4:5), nomes sem espaço nem acento.
+Fotos: WebP, 1200x1500 px (4:5), nomes sem espaço nem acento. Para o modo recorte, use PNG ou WebP com fundo transparente e o aparelho ocupando a maior parte do quadro.
 
 **Dados da loja** ficam no objeto `CONFIG`, no topo do `script.js`: nome, número do WhatsApp (só dígitos, com DDI e DDD), Instagram e outras redes, horário de atendimento, dados de entrega (`entrega.area`, `entrega.prazo`, `entrega.taxa`, `entrega.pagamento`), CNPJ, texto de parcelamento e as mensagens prontas do WhatsApp. Todos os botões usam esses valores automaticamente.
 
@@ -98,7 +102,7 @@ Fotos: WebP, 1200x1500 px (4:5), nomes sem espaço nem acento.
 - Título, descrição e Open Graph ficam no `<head>` do `index.html`.
 - Cores, espaçamentos e raios ficam no bloco `:root` do `style.css`, com as cores do tema escuro logo abaixo.
 - Os PNGs do ícone são exportados a partir de `assets/logo.svg`.
-- Para usar uma foto no topo da página, adicione a classe `hero--com-foto` na seção do hero e descomente o bloco `<figure class="hero__foto">`. O layout passa a ter duas colunas e a decoração dá lugar à foto.
+- Para usar uma foto no topo da página, adicione a classe `hero--com-foto` na seção do hero e descomente o bloco `<figure class="hero__foto">`. O layout passa a ter duas colunas, com o texto à esquerda e a foto à direita.
 
 ## Deploy
 
