@@ -20,6 +20,11 @@
                   ou com uma descrição própria (melhor para quem usa leitor de tela):
                     fotos: [{ src: 'assets/produtos/iphone-15-rosa-1.webp', alt: 'iPhone 15 rosa, traseira' }],
                   Sem foto ([]), aparece um fundo neutro com o logo da loja.
+                  Toda foto é exibida no mesmo padrão: quadro 4:5, preenchendo e centralizada.
+   recorte        true = as fotos são recortes com fundo transparente (PNG ou WebP).
+                  O aparelho aparece inteiro e centralizado, sobre um tom da cor dele.
+   corHex         cor do aparelho em hexadecimal, usada no fundo do modo recorte
+                  (ex.: corHex: '#efcfcd' para rosa). Sem corHex, o fundo fica cinza.
    detalhes       lista que aparece ao abrir o produto
    ============================================================= */
 

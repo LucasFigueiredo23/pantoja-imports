@@ -53,6 +53,7 @@
   --halo: rgb(255 255 255 / .55); /* brilho neutro e sutil atrás do título do hero */
   --decor-linhas: .11;      /* opacidade das linhas usinadas */
   --grao: .04;              /* opacidade do granulado */
+  --recorte-base: var(--superficie); /* base misturada à cor do aparelho no modo recorte */
 
   --fonte-display: 'Archivo', 'Arial Black', system-ui, sans-serif;
   --fonte-texto: 'Archivo', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -100,7 +101,7 @@
     --acento: #CDB4A0; --acento-suave: #8C735F; --sobre-tinta: #131416;
     --verde-texto: #3FBF73; --sombra-cor: 0 0 0;
     --metal-claro: #E9DACB; --metal-medio: #9C8270; --metal-escuro: #3B312A;
-    --halo: rgb(255 255 255 / .035); --decor-linhas: .09; --grao: .035;
+    --halo: rgb(255 255 255 / .035); --decor-linhas: .09; --grao: .035; --recorte-base: #3A3C40;
     color-scheme: dark;
   }
 }
@@ -110,7 +111,7 @@
   --acento: #CDB4A0; --acento-suave: #8C735F; --sobre-tinta: #131416;
   --verde-texto: #3FBF73; --sombra-cor: 0 0 0;
   --metal-claro: #E9DACB; --metal-medio: #9C8270; --metal-escuro: #3B312A;
-  --halo: rgb(255 255 255 / .035); --decor-linhas: .09; --grao: .035;
+  --halo: rgb(255 255 255 / .035); --decor-linhas: .09; --grao: .035; --recorte-base: #3A3C40;
   color-scheme: dark;
 }
 
@@ -549,7 +550,36 @@ p { text-wrap: pretty; }
 }
 .galeria__trilho::-webkit-scrollbar { display: none; }
 .galeria__slide { flex: 0 0 100%; overflow: hidden; scroll-snap-align: start; scroll-snap-stop: always; }
-.galeria__slide img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s var(--ease); }
+/* Toda foto segue o mesmo padrão em qualquer lugar (vitrine, destaques e detalhes):
+   quadro 4:5, foto preenchendo o quadro e centralizada */
+.galeria__slide img {
+  display: block; width: 100%; height: 100%;
+  object-fit: cover; object-position: 50% 50%;
+  transition: transform .5s var(--ease);
+}
+
+/* Contorno fino igual em todas as fotos do card: fotos claras e escuras
+   terminam na mesma borda, sem uma "sumir" no fundo */
+.galeria--card::after {
+  content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  border-radius: var(--raio-g);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tinta) 8%, transparent);
+}
+
+/* Modo "recorte" (recorte: true em produtos.js): foto com fundo transparente.
+   O aparelho aparece inteiro e centralizado, sobre um tom da cor dele (corHex) */
+.galeria--recorte { --tom: #C9CBCE; } /* cor padrão se o produto não tiver corHex */
+.galeria--recorte .galeria__trilho,
+.galeria--recorte .galeria__miniaturas button {
+  background:
+    radial-gradient(85% 65% at 50% 40%, color-mix(in srgb, var(--tom) 25%, var(--recorte-base)), transparent 72%),
+    color-mix(in srgb, var(--tom) 48%, var(--recorte-base));
+}
+.galeria--recorte .galeria__slide img {
+  object-fit: contain; padding: 9% 13%;
+  filter: drop-shadow(0 18px 18px rgb(0 0 0 / .22));
+}
+.galeria--recorte .galeria__miniaturas img { object-fit: contain; padding: 8%; }
 
 .galeria--card .galeria__trilho { cursor: pointer; }
 .card:hover .galeria__trilho { box-shadow: var(--sombra-2); }
@@ -585,7 +615,7 @@ p { text-wrap: pretty; }
 @media (max-width: 560px) {
   .grade { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--e-6) var(--e-3); }
   .card { gap: var(--e-3); }
-  .galeria__trilho { border-radius: var(--raio-m); }
+  .galeria__trilho, .galeria--card::after { border-radius: var(--raio-m); }
   .selo { top: var(--e-2); left: var(--e-2); font-size: .68rem; padding: .25rem .55rem; }
   .card__nome { font-size: .98rem; }
   .card__spec { font-size: .8rem; }

@@ -146,6 +146,11 @@ function galeriaHTML(p, { modo = 'card', limite = Infinity } = {}) {
   const rolavel = total > 1 ? ` tabindex="0" aria-label="Fotos de ${esc(p.modelo)}. Use as setas para ver as outras."` : '';
   const abrir = modo === 'card' ? ` data-abrir="${indice}"` : '';
 
+  // Modo recorte (foto com fundo transparente): o fundo do quadro usa a cor do aparelho.
+  // A cor só entra se for um hexadecimal válido (vai direto para um atributo style)
+  const recorte = p.recorte && total ? ' galeria--recorte' : '';
+  const tom = recorte && /^#[0-9a-f]{3,8}$/i.test(p.corHex || '') ? ` style="--tom: ${p.corHex}"` : '';
+
   let controles = '';
   if (total > 1 && modo === 'card') {
     // Para mouse e toque; quem usa teclado rola o trilho com as setas
@@ -156,7 +161,7 @@ function galeriaHTML(p, { modo = 'card', limite = Infinity } = {}) {
       `<button type="button" data-ir-foto="${i}" aria-label="Ver foto ${i + 1} de ${total}"${i === 0 ? ' aria-current="true"' : ''}><img src="${esc(f.src)}" alt="" width="1200" height="1500" loading="lazy" decoding="async"></button>`).join('')}</div>`;
   }
 
-  return `<div class="galeria galeria--${modo}" data-galeria>
+  return `<div class="galeria galeria--${modo}${recorte}" data-galeria${tom}>
     <ul class="galeria__trilho" data-trilho${rolavel}${abrir}>${slides}</ul>
     ${controles}
   </div>`;
