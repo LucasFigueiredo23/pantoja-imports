@@ -53,7 +53,6 @@
   --halo: rgb(191 164 143 / .30); /* brilho suave de fundo */
   --decor-linhas: .11;      /* opacidade das linhas usinadas */
   --grao: .05;              /* opacidade do granulado */
-  --reflexo: rgb(255 255 255 / .7); /* reflexo no vidro */
 
   --fonte-display: 'Archivo', 'Arial Black', system-ui, sans-serif;
   --fonte-texto: 'Archivo', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -101,7 +100,7 @@
     --acento: #CDB4A0; --acento-suave: #8C735F; --sobre-tinta: #131416;
     --verde-texto: #3FBF73; --sombra-cor: 0 0 0;
     --metal-claro: #E9DACB; --metal-medio: #9C8270; --metal-escuro: #3B312A;
-    --halo: rgb(140 115 95 / .22); --decor-linhas: .09; --grao: .06; --reflexo: rgb(255 255 255 / .09);
+    --halo: rgb(140 115 95 / .22); --decor-linhas: .09; --grao: .06;
     color-scheme: dark;
   }
 }
@@ -111,7 +110,7 @@
   --acento: #CDB4A0; --acento-suave: #8C735F; --sobre-tinta: #131416;
   --verde-texto: #3FBF73; --sombra-cor: 0 0 0;
   --metal-claro: #E9DACB; --metal-medio: #9C8270; --metal-escuro: #3B312A;
-  --halo: rgb(140 115 95 / .22); --decor-linhas: .09; --grao: .06; --reflexo: rgb(255 255 255 / .09);
+  --halo: rgb(140 115 95 / .22); --decor-linhas: .09; --grao: .06;
   color-scheme: dark;
 }
 
@@ -325,111 +324,63 @@ p { text-wrap: pretty; }
 }
 
 /* ---------- 5. Hero ----------
-   Padrão: só texto. Com a classe .hero--com-foto na <section>, vira duas colunas. */
+   Só tipografia: o título é o ponto de foco, sem foto e sem ilustração.
+   Com a classe .hero--com-foto na <section>, vira duas colunas (texto e foto). */
 .hero {
   position: relative; isolation: isolate; overflow: clip;
-  padding-top: calc(var(--topo-altura) + clamp(3rem, 10vw, 7.5rem));
-  padding-bottom: clamp(3rem, 8vw, 6rem);
+  padding-top: calc(var(--topo-altura) + clamp(3.5rem, 11vw, 9rem));
+  padding-bottom: clamp(3rem, 7vw, 5.5rem);
 }
-/* Fundo: brilho de titânio atrás da decoração + granulado leve por cima de tudo */
+/* Fundo liso com um brilho sutil atrás do título.
+   Some antes do fim da seção, sem emenda com a próxima */
 .hero::before {
-  content: ''; position: absolute; inset: 0; z-index: -3; pointer-events: none;
-  background:
-    radial-gradient(42% 62% at 77% 50%, var(--halo), transparent 72%),
-    radial-gradient(40% 50% at 0% 0%, color-mix(in srgb, var(--halo) 55%, transparent), transparent 70%);
-  -webkit-mask: linear-gradient(#000 60%, transparent); mask: linear-gradient(#000 60%, transparent);
+  content: ''; position: absolute; inset: 0; z-index: -2; pointer-events: none;
+  background: radial-gradient(46% 58% at 34% 42%, var(--halo), transparent 70%);
 }
+/* Granulado leve (assets/decor/grao.svg), também esmaecendo no fim */
 .hero::after {
   content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background: var(--tinta); opacity: var(--grao);
-  /* granulado + degradê: o fundo do hero some aos poucos, sem emenda com a próxima seção */
   -webkit-mask: url('assets/decor/grao.svg') 0 0 / 180px repeat, linear-gradient(#000 55%, transparent);
   -webkit-mask-composite: source-in;
   mask: url('assets/decor/grao.svg') 0 0 / 180px repeat intersect, linear-gradient(#000 55%, transparent);
 }
 
-/* Decoração do hero: tudo atrás do texto, some no fim da seção */
-.hero__decor {
-  position: absolute; inset: 0; z-index: -2; pointer-events: none;
-  -webkit-mask: linear-gradient(#000 78%, transparent); mask: linear-gradient(#000 78%, transparent);
-}
-.hero--com-foto .hero__decor { display: none; }
-
-.hero__usinado {
-  position: absolute; left: 77%; top: 50%; width: min(1150px, 95vw); aspect-ratio: 1;
-  translate: -50% -50%;
-  background: var(--tinta); opacity: var(--decor-linhas);
-  -webkit-mask: url('assets/decor/usinado.svg') center / contain no-repeat;
-  mask: url('assets/decor/usinado.svg') center / contain no-repeat;
-}
-
-/* Aparelhos genéricos: aro de titânio (assets/decor/moldura.svg) e vidro */
-.aparelho { position: absolute; left: 77%; top: 50%; aspect-ratio: 300 / 620; }
-.aparelho--frente { width: clamp(200px, 19vw, 290px); translate: -38% -50%; rotate: -9deg; }
-/* O de trás fica atrás e à direita do da frente: longe do texto em qualquer largura */
-.aparelho--fundo { width: clamp(170px, 15.5vw, 240px); translate: 34% -64%; rotate: 7deg; opacity: .5; }
-@media (max-width: 1280px) { .aparelho--fundo { display: none; } }
-
-/* O aro: um gradiente cônico (reflexos do metal) recortado pela máscara.
-   Fica parado de propósito: com @property na página, o Chrome roda animações na thread
-   principal, e um brilho girando sem parar gastaria CPU e bateria no celular */
-.aparelho__aro {
-  position: absolute; inset: 0;
-  background: conic-gradient(from 200deg, var(--metal-escuro), var(--metal-claro) 9%, var(--metal-medio) 20%, var(--metal-escuro) 36%, var(--metal-medio) 50%, var(--metal-claro) 58%, var(--metal-medio) 70%, var(--metal-escuro));
-  -webkit-mask: url('assets/decor/moldura.svg') center / 100% 100% no-repeat;
-  mask: url('assets/decor/moldura.svg') center / 100% 100% no-repeat;
-}
-.aparelho--fundo .aparelho__aro { background: conic-gradient(from 20deg, var(--metal-escuro), var(--metal-claro) 12%, var(--metal-medio) 26%, var(--metal-escuro) 45%, var(--metal-claro) 62%, var(--metal-medio) 78%, var(--metal-escuro)); }
-
-/* Vidro: reflexo diagonal e um brilho de titânio por dentro */
-.aparelho__vidro {
-  position: absolute; inset: 2.6% 5.3%; border-radius: 16% / 7.3%;
-  background:
-    linear-gradient(118deg, transparent 30%, var(--reflexo) 41%, transparent 42.5%, transparent 46%, color-mix(in srgb, var(--reflexo) 50%, transparent) 47.5%, transparent 58%),
-    radial-gradient(100% 55% at 20% 8%, var(--halo), transparent 70%),
-    linear-gradient(170deg, color-mix(in srgb, var(--superficie) 55%, transparent), color-mix(in srgb, var(--bg-alt) 20%, transparent));
-  box-shadow: 0 50px 90px -40px rgb(var(--sombra-cor) / .45);
-}
-
-/* Conta de titânio: o "ponto" do ícone solto na composição */
-.hero__conta {
-  position: absolute; left: calc(77% - 7.5vw); top: calc(50% + 15.5vw);
-  width: clamp(14px, 1.5vw, 22px); aspect-ratio: 1; border-radius: 50%;
-  background: radial-gradient(circle at 34% 30%, var(--metal-claro), var(--metal-medio) 50%, var(--metal-escuro));
-  box-shadow: 0 6px 14px rgb(var(--sombra-cor) / .22);
-}
-
-/* Entrada da decoração: só desliza, sem esmaecer (assim não atrasa o LCP).
-   Desligada com prefers-reduced-motion */
-.hero__decor > * { animation: decor-entra 1.2s var(--ease) both; }
-.hero__decor > .aparelho--frente { animation-delay: 80ms; }
-.hero__decor > .hero__conta { animation-delay: 200ms; }
-@keyframes decor-entra { from { transform: translateY(28px); } }
-
 .hero__grid { display: grid; align-items: center; gap: clamp(var(--e-6), 5vw, var(--e-8)); }
 
 .hero__sobretitulo {
-  display: inline-flex; align-items: center; gap: var(--e-3);
+  display: inline-flex; align-items: flex-start; gap: var(--e-3);
   font-size: .95rem; font-weight: 600; color: var(--acento);
 }
-.hero__sobretitulo::before { content: ''; width: 28px; height: 1.5px; background: currentColor; }
+/* O traço acompanha a primeira linha, mesmo quando o texto quebra no celular */
+.hero__sobretitulo::before { content: ''; flex: none; width: 28px; height: 1.5px; margin-top: .8em; background: currentColor; }
 
 .hero h1 {
-  max-width: 13ch; margin-top: var(--e-5);
+  margin-top: var(--e-5);
   font-size: clamp(2.15rem, 1rem + 5.9vw, 5.6rem);
   font-weight: 800; line-height: 1.02; letter-spacing: -.035em;
 }
+/* No computador cada frase do título fica numa linha: quebras na pausa natural da leitura */
+@media (min-width: 861px) { .hero h1 .frase { display: block; } }
+
+/* Texto de apoio e botões lado a lado, formando um bloco logo abaixo do título */
+.hero__base {
+  display: grid; grid-template-columns: minmax(0, 44ch) auto; align-items: center; justify-content: start;
+  gap: var(--e-5) clamp(var(--e-6), 5vw, 4.5rem);
+  margin-top: clamp(var(--e-6), 3.5vw, var(--e-7));
+}
 .hero__sub {
-  max-width: 50ch; margin-top: var(--e-5);
-  font-size: clamp(1.05rem, .95rem + .45vw, 1.25rem); line-height: 1.55;
+  font-size: clamp(1.05rem, .95rem + .45vw, 1.2rem); line-height: 1.55;
   color: var(--tinta-suave);
 }
-.hero__botoes { display: flex; flex-wrap: wrap; gap: var(--e-3); margin-top: var(--e-6); }
+.hero__botoes { display: flex; flex-wrap: wrap; gap: var(--e-3); }
 
+/* Garantias: uma faixa fina que fecha o hero */
 .hero__confianca {
-  list-style: none; padding: 0;
-  display: flex; flex-wrap: wrap; gap: var(--e-3) var(--e-5);
-  margin-top: var(--e-7);
+  list-style: none; padding: var(--e-5) 0 0;
+  display: flex; flex-wrap: wrap; gap: var(--e-3) var(--e-6);
+  margin-top: clamp(var(--e-7), 6vw, 4.5rem);
+  border-top: 1px solid var(--linha);
   font-size: .925rem; font-weight: 500; color: var(--tinta-suave);
 }
 .hero__confianca li { display: inline-flex; align-items: center; gap: var(--e-2); }
@@ -438,14 +389,15 @@ p { text-wrap: pretty; }
 /* Entrada escalonada (desligada com prefers-reduced-motion, ver seção 15) */
 .hero__texto > * { animation: hero-entra .6s var(--ease) both; }
 .hero__texto > :nth-child(2) { animation-delay: 60ms; }
-.hero__texto > :nth-child(3) { animation-delay: 140ms; }
-.hero__texto > :nth-child(4) { animation-delay: 220ms; }
-.hero__texto > :nth-child(5) { animation-delay: 300ms; }
+.hero__texto > :nth-child(3) { animation-delay: 160ms; }
+.hero__texto > :nth-child(4) { animation-delay: 260ms; }
 @keyframes hero-entra { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
 
-/* Com foto: duas colunas */
+/* Com foto: duas colunas; o título volta a quebrar sozinho e o bloco de baixo empilha */
 .hero--com-foto .hero__grid { grid-template-columns: 1.1fr .9fr; }
 .hero--com-foto h1 { font-size: clamp(2.15rem, 1rem + 4.2vw, 4.4rem); }
+.hero--com-foto h1 .frase { display: inline; }
+.hero--com-foto .hero__base { grid-template-columns: minmax(0, 50ch); }
 .hero__foto {
   position: relative; overflow: hidden;
   aspect-ratio: 4 / 5; border-radius: var(--raio-xg);
@@ -457,18 +409,11 @@ p { text-wrap: pretty; }
 @media (max-width: 860px) {
   .hero--com-foto .hero__grid { grid-template-columns: 1fr; }
   .hero__foto { width: min(100%, 480px); border-radius: var(--raio-g); }
-
-  /* No celular o texto ocupa a largura toda: a decoração fica no canto de baixo,
-     ao lado da lista de garantias, e nunca passa por trás do texto */
-  .hero { padding-bottom: clamp(4rem, 12vw, 6rem); }
-  .hero__confianca { flex-direction: column; }
-  .hero__decor { -webkit-mask: linear-gradient(#000 84%, transparent); mask: linear-gradient(#000 84%, transparent); }
-  .hero__usinado { left: auto; top: auto; right: 0; bottom: 0; width: 560px; translate: 38% 50%; }
-  .aparelho--frente { left: auto; top: auto; right: -3%; bottom: 0; width: clamp(130px, 31vw, 210px); translate: 0 42%; rotate: -12deg; }
-  .hero__conta { display: none; }
+  .hero::before { background: radial-gradient(70% 45% at 40% 38%, var(--halo), transparent 70%); }
+  .hero__base { grid-template-columns: minmax(0, 50ch); }
 }
 @media (max-width: 560px) {
-  .hero__confianca { margin-top: var(--e-6); }
+  .hero__confianca { flex-direction: column; margin-top: var(--e-7); }
   .hero__botoes .btn { flex: 1 1 auto; }
 }
 
@@ -906,7 +851,6 @@ html.travado { overflow: hidden; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .hero__decor > * { animation: none !important; }
   *, *::before, *::after {
     animation-duration: .01ms !important;
     animation-iteration-count: 1 !important;

@@ -40,10 +40,6 @@
 
   <!-- Fonte do site (Archivo, títulos e textos) carregada primeiro -->
   <link rel="preload" href="assets/fontes/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <!-- Linhas e aro do topo (máscaras CSS): carregados cedo para não atrasar o LCP.
-       crossorigin é obrigatório: o navegador busca máscaras em modo CORS -->
-  <link rel="preload" href="assets/decor/usinado.svg" as="image" type="image/svg+xml" crossorigin>
-  <link rel="preload" href="assets/decor/moldura.svg" as="image" type="image/svg+xml" crossorigin>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -87,26 +83,19 @@
          Para colocar uma foto aqui depois:
          1. adicione a classe "hero--com-foto" na <section> abaixo;
          2. descomente o <figure class="hero__foto"> no fim do bloco.
-         O layout vira duas colunas sozinho (texto à esquerda, foto à direita)
-         e a decoração abaixo some para dar lugar à foto. -->
+         O layout vira duas colunas sozinho (texto à esquerda, foto à direita).
+         Sem foto, o título é o ponto de foco: no computador cada frase (.frase) ocupa uma linha. -->
     <section class="hero" id="inicio">
-      <!-- Decoração (só visual): linhas usinadas, dois aparelhos genéricos de vidro e titânio
-           e uma conta de titânio. Formas em assets/decor/, cores e posição no style.css (seção 5). -->
-      <div class="hero__decor" aria-hidden="true">
-        <div class="hero__usinado"></div>
-        <div class="aparelho aparelho--fundo"><div class="aparelho__aro"></div></div>
-        <div class="aparelho aparelho--frente"><div class="aparelho__vidro"></div><div class="aparelho__aro"></div></div>
-        <div class="hero__conta"></div>
-      </div>
-
       <div class="container hero__grid">
         <div class="hero__texto">
           <p class="hero__sobretitulo">Loja online de iPhones em Castanhal-PA</p>
-          <h1>Seu próximo iPhone, com procedência e garantia<span class="ponto">.</span></h1>
-          <p class="hero__sub">Aparelhos novos e seminovos revisados, com nota e garantia da loja. Escolha o seu, fale direto com a gente pelo WhatsApp e receba no seu endereço.</p>
-          <div class="hero__botoes">
-            <a class="btn btn--escuro" href="#produtos">Ver produtos</a>
-            <a class="btn btn--linha js-whats" href="#contato">Falar no WhatsApp</a>
+          <h1><span class="frase">Seu próximo iPhone,</span> <span class="frase">com procedência</span> <span class="frase">e garantia<span class="ponto">.</span></span></h1>
+          <div class="hero__base">
+            <p class="hero__sub">Aparelhos novos e seminovos revisados, com nota e garantia da loja. Escolha o seu, fale direto com a gente pelo WhatsApp e receba no seu endereço.</p>
+            <div class="hero__botoes">
+              <a class="btn btn--escuro" href="#produtos">Ver produtos</a>
+              <a class="btn btn--linha js-whats" href="#contato">Falar no WhatsApp</a>
+            </div>
           </div>
           <ul class="hero__confianca" aria-label="Garantias da loja">
             <li>
