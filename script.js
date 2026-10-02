@@ -2,7 +2,7 @@
    Pantoja Imports: script principal
    -------------------------------------------------------------
    Os aparelhos ficam em produtos.js. Aqui você só mexe em:
-     1. CONFIG       -> dados da loja (WhatsApp, Instagram, endereço...)
+     1. CONFIG       -> dados da loja (WhatsApp, Instagram, entrega...)
      2. DEPOIMENTOS  -> avaliações de clientes
    Depois do aviso "DAQUI PARA BAIXO" fica a lógica do site.
    ============================================================= */
@@ -19,13 +19,18 @@ const CONFIG = {
   tiktok: '',                  // ex.: 'pantojaimports' (vazio = não aparece)
   facebook: '',                // ex.: 'pantojaimports' (vazio = não aparece)
 
-  endereco: 'Rua Exemplo, 123, Centro',
-  cidade: 'Castanhal, PA',
+  // Horário de atendimento pelo WhatsApp (a loja trabalha só com entrega)
   horario: ['Segunda a sexta, 9h às 18h', 'Sábado, 9h às 13h'],
 
-  // Google Maps > Compartilhar > Incorporar um mapa > copie só o link que está dentro de src="..."
-  // Vazio = mostra um cartão com o botão "Abrir no Google Maps"
-  mapaEmbed: '',
+  // Bloco "Como funciona a entrega", na seção Contato.
+  // Campo vazio ('') = a linha não aparece.
+  // ATENÇÃO: textos provisórios, confirme cada um antes de publicar.
+  entrega: {
+    area: 'Castanhal e cidades da região',               // cidades ou bairros atendidos
+    prazo: 'No mesmo dia para pedidos até 16h',
+    taxa: 'Grátis em Castanhal, a combinar em outras cidades',
+    pagamento: 'Pix ou cartão em até 12x',
+  },
 
   cnpj: '', // ex.: '00.000.000/0001-00' (vazio = não aparece)
   parcelamento: 'ou em até 12x no cartão',
@@ -34,6 +39,7 @@ const CONFIG = {
   mensagens: {
     geral: 'Olá! Vim pelo site e quero saber mais sobre os aparelhos.',
     troca: 'Olá! Tenho um iPhone usado e quero avaliar para dar na troca.',
+    entrega: 'Olá! Quero saber o prazo e a taxa de entrega para o meu endereço. Bairro e cidade: ',
   },
 };
 
@@ -61,7 +67,11 @@ const esc = (texto) => String(texto ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&
 const ICONES = {
   whats: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 11.6a8.4 8.4 0 0 1-12.4 7.4L3.5 20.5 5 16a8.4 8.4 0 1 1 15.5-4.4Z"/></svg>',
   check: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.2 2.4 2.4 4.6-4.9"/></svg>',
-  pino: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 1 1 14 0C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',
+  // Bloco de entrega: mapa dobrado, relógio, etiqueta e cartão
+  area: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 3.5 6v14L9 18l6 2 5.5-2V4L15 6 9 4Z"/><path d="M9 4v14M15 6v14"/></svg>',
+  prazo: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/></svg>',
+  taxa: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 12.4V4.5a1 1 0 0 1 1-1h7.9l8.1 8.1a1.5 1.5 0 0 1 0 2.1l-6.8 6.8a1.5 1.5 0 0 1-2.1 0l-8.1-8.1Z"/><circle cx="8.3" cy="8.3" r="1.5"/></svg>',
+  pagamento: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 15h4"/></svg>',
   // Monograma da loja, usado no fundo de produto sem foto
   logo: '<svg viewBox="0 0 64 64" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"><line x1="22" y1="16" x2="22" y2="48"/><circle cx="33" cy="27" r="11"/><circle cx="33" cy="27" r="3.5" fill="currentColor" stroke="none"/></svg>',
 };
@@ -200,7 +210,6 @@ function aplicarConfig() {
   });
   $$('[data-insta-user]').forEach((el) => { el.textContent = '@' + CONFIG.instagram; });
 
-  $('#endereco').innerHTML = `<span>${esc(CONFIG.endereco)}</span><span>${esc(CONFIG.cidade)}</span>`;
   $('#horario').innerHTML = CONFIG.horario.map((h) => `<span>${esc(h)}</span>`).join('');
 
   const extras = [
@@ -215,16 +224,18 @@ function aplicarConfig() {
   $('#ano').textContent = new Date().getFullYear();
   if (CONFIG.cnpj) $('#cnpj').textContent = `CNPJ ${CONFIG.cnpj}.`;
 
-  // Mapa
-  const mapa = $('#mapa');
-  const enderecoCompleto = `${CONFIG.endereco}, ${CONFIG.cidade}`;
-  if (CONFIG.mapaEmbed) {
-    mapa.innerHTML = `<iframe src="${esc(CONFIG.mapaEmbed)}" title="Mapa com a localização da loja" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>`;
-  } else {
-    const link = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(enderecoCompleto)}`;
-    mapa.innerHTML = `<div class="mapa__vazio">${ICONES.pino}<p>${esc(enderecoCompleto)}</p>
-      <a class="btn btn--escuro btn--sm" href="${link}" target="_blank" rel="noopener">Abrir no Google Maps</a></div>`;
-  }
+  // Como funciona a entrega: uma linha por campo preenchido em CONFIG.entrega
+  const LINHAS_ENTREGA = [
+    ['area', 'Área atendida'],
+    ['prazo', 'Prazo'],
+    ['taxa', 'Taxa de entrega'],
+    ['pagamento', 'Pagamento'],
+  ];
+  const entrega = CONFIG.entrega || {};
+  $('#entregaLista').innerHTML = LINHAS_ENTREGA
+    .filter(([campo]) => entrega[campo])
+    .map(([campo, titulo]) => `<div><dt>${ICONES[campo]}${titulo}</dt><dd>${esc(entrega[campo])}</dd></div>`)
+    .join('');
 }
 
 /* ---------- Catálogo ---------- */

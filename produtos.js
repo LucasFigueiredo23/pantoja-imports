@@ -113,6 +113,6 @@ const PRODUTOS = [
     selo: '',
     destaque: false,
     fotos: [],
-    detalhes: ['Para todos os modelos de iPhone', 'Borda a borda', 'Aplicação na hora, na loja', 'Diga o seu modelo no WhatsApp'],
+    detalhes: ['Para todos os modelos de iPhone', 'Borda a borda', 'Diga o seu modelo no WhatsApp'],
   },
 ];
